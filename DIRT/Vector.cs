@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Text;
+
+namespace DIRT
+{
+    class Vector
+    {
+        public double x, y, z, w;
+
+        #region constructors
+
+        public Vector()
+        {
+            x = 0;
+            y = 0;
+            z = 0;
+            w = 0;
+        }
+
+        public Vector(double _x)
+        {
+            x = _x;
+            y = 0;
+            z = 0;
+            w = 0;
+        }
+
+        public Vector(double _x, double _y)
+        {
+            x = _x;
+            y = _y;
+            z = 0;
+            w = 0;
+        }
+
+        public Vector(double _x, double _y, double _z)
+        {
+            x = _x;
+            y = _y;
+            z = _z;
+            w = 0;
+        }
+
+        public Vector(double _x, double _y, double _z, double _w)
+        {
+            x = _x;
+            y = _y;
+            z = _z;
+            w = _w;
+        }
+
+        #endregion
+
+        public double magnitude
+        {
+            get
+            {
+                return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2) + Math.Pow(w, 2));
+            }
+        }
+
+        public Vector normalized
+        {
+            get
+            {
+                return this / magnitude;
+            }
+        }
+
+        public static double distance(Vector from, Vector to)
+        {
+            return Math.Sqrt(Math.Pow(from.x - to.x,2) + Math.Pow(from.y - to.y, 2) + Math.Pow(from.z - to.z, 2) + Math.Pow(from.w - to.w, 2));
+        }
+
+        public static Vector cross(Vector v1, Vector v2)
+        {
+            Vector v = new Vector();
+
+            v.x = (v1.y * v2.z) - (v1.z * v2.y);
+            v.y = (v1.z * v2.x) - (v1.x * v2.z);
+            v.z = (v1.x * v2.y) - (v1.y * v2.x);
+
+            return v;
+        }
+
+        public static double dot(Vector v1, Vector v2)
+        {
+            return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+        }
+
+        #region operators
+
+        public static Vector operator +(Vector v1, Vector v2)
+        {
+            return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z, v1.w + v2.w);
+        }
+
+        public static Vector operator -(Vector v1, Vector v2)
+        {
+            return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
+        }
+
+        public static Vector operator *(Vector v1, double m)
+        {
+            return new Vector(v1.x *m, v1.y * m, v1.z * m, v1.w * m);
+        }
+
+        public static Vector operator /(Vector v1, double m)
+        {
+            return new Vector(v1.x / m, v1.y / m, v1.z / m, v1.w / m);
+        }
+
+        public static bool operator ==(Vector v1, Vector v2)
+        {
+            return (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z && v1.w == v2.w);
+        }
+
+        public static bool operator !=(Vector v1, Vector v2)
+        {
+            return (v1.x != v2.x || v1.y != v2.y || v1.z != v2.z || v1.w != v2.w);
+        }
+
+        #endregion
+
+        public static Vector front = new Vector(0, 0, 1);
+        public static Vector back = new Vector(0, 0, -1);
+        public static Vector left = new Vector(-1, 0, 0);
+        public static Vector right = new Vector(1, 0, 0);
+        public static Vector up = new Vector(0, 1, 0);
+        public static Vector down = new Vector(0, -1, 0);
+    }
+}
