@@ -2,7 +2,7 @@
 
 namespace DIRT
 {
-    class Vector
+    public class Vector
     {
         public double x, y, z, w;
 
@@ -85,6 +85,11 @@ namespace DIRT
         public static double dot(Vector v1, Vector v2)
         {
             return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+        }
+
+        public static double angleDist(Vector v1, Vector v2)
+        {
+            return Vector.dot(v1, v2) / (v1.magnitude * v2.magnitude);
         }
 
         #region operators
