@@ -7,7 +7,7 @@ namespace DIRT
     {
         public Vector position;
         public Vector rotation;
-        List<Triangle> tris = new List<Triangle>();
+        public List<Triangle> tris = new List<Triangle>();
 
         public Mesh(Vector pos,Vector rot)
         {

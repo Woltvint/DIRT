@@ -45,7 +45,9 @@ namespace DIRT
             for (int i = 0; i < 3; i++)
             {
                 t.points[i] = points[i];
-                
+
+                t.points[i] *= Settings.scale;
+
                 t.points[i] *= Matrix4x4.rotationXMatrix(rot.x);
                 t.points[i] *= Matrix4x4.rotationYMatrix(rot.y);
                 t.points[i] *= Matrix4x4.rotationZMatrix(rot.z);

@@ -4,13 +4,13 @@ namespace DIRT
 {
     public static class Settings
     {
-        public static double width = 300;
-        public static double height = 200;
+        public static double width = 1000;
+        public static double height = 900;
         public static double aspectRatio
         {
             get
             {
-                return height / width;
+                return height / width;;
             }
         }
 

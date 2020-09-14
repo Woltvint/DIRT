@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading;
+
 
 namespace DIRT
 {
@@ -9,65 +12,103 @@ namespace DIRT
         static Thread screenThread;
         static void Main(string[] args)
         {
+            Console.WriteLine("path: ");
+            string path = Console.ReadLine();
+
+
+            Mesh m = loadFromOBJ(path);
+
+            
             screenThread = new Thread(Screen.draw);
             screenThread.Start();
 
             Thread.Sleep(100);
 
-            Mesh m1 = new Mesh(new Vector(-75, 0, 200), new Vector(0,0,0));
-            Mesh m2 = new Mesh(new Vector(75, 0, 200), new Vector(0, 0, 0));
-            Mesh m3 = new Mesh(new Vector(0, 0, 100), new Vector(0, 0, 0));
-
-            m1.makeCube(100);
-            m2.makePyramid(100);
-            m3.makeCube(25);
-
-            bool side = false;
-
             while (true)
             {
-                m1.rotation.x += 0.001;
-                m1.rotation.y += 0.0005;
-                m1.rotation.z += 0.002;
-
-                m1.renderMesh();
-
-                m2.rotation.x += 0.0005;
-                m2.rotation.y += 0.0025;
-                m2.rotation.z += 0.002;
-
-                m2.renderMesh();
-
-                if (side)
-                {
-                    m3.position.x += 0.5;
-                }
-                else
-                {
-                    m3.position.x -= 0.5;
-                }
-
-                if (m3.position.x > 100)
-                {
-                    side = false;
-                }
-
-                if (m3.position.x < -100)
-                {
-                    side = true;
-                }
-
-                m3.rotation.x += 0.006;
-                m3.rotation.y += 0.004;
-                m3.rotation.z += 0.002;
-
-                m3.renderMesh();
-
+                //m.rotation.x += 0.001;
+                m.rotation.y += 0.02;
+                //m.rotation.z += 0.003;
+                
+                m.renderMesh();
 
                 Screen.frameReady = true;
+
+
+                switch(Screen.getInput())
+                {
+                    case 'w':
+                        Settings.scale += 0.1;
+                        break;
+                    case 's':
+                        Settings.scale -= 0.1;
+                        break;
+
+                    case 'a':
+                        m.position.x += 1;
+                        break;
+                    case 'd':
+                        m.position.x -= 1;
+                        break;
+                    case 'q':
+                        m.position.y += 1;
+                        break;
+                    case 'e':
+                        m.position.y -= 1;
+                        break;
+
+                    /*case 'q':
+                        m.rotation.y += 0.05;
+                        break;
+                    case 'e':
+                        m.rotation.y -= 0.05;
+                        break;*/
+
+                }
+
+            }
+        }
+
+        static Mesh loadFromOBJ(string path)
+        {
+            Mesh m = new Mesh(new Vector(0,0,0),new Vector(0,0,Math.PI));
+
+            string[] lines = File.ReadAllLines(path);
+
+            List<Vector> verts = new List<Vector>();
+            List<Triangle> tris = new List<Triangle>();
+
+            foreach (string line in lines)
+            {
+                if (line.StartsWith("v "))
+                {
+                    string[] coords = line.Split(' ');
+                    Vector v = new Vector();
+
+                    v.x = Convert.ToDouble(coords[1])*10;
+                    v.y = Convert.ToDouble(coords[2])*10;
+                    v.z = Convert.ToDouble(coords[3])*10;
+
+                    verts.Add(v);
+                }
+
+                if (line.StartsWith("f "))
+                {
+                    string[] ver = line.Split(' ');
+
+                    Triangle t = new Triangle();
+
+                    t.points[0] = verts[Convert.ToInt32( ver[1].Split('/')[0])-1];
+                    t.points[1] = verts[Convert.ToInt32(ver[2].Split('/')[0])-1];
+                    t.points[2] = verts[Convert.ToInt32(ver[3].Split('/')[0])-1];
+
+                    tris.Add(t);
+                }
             }
 
-            
+            m.tris = tris;
+
+            return m;
 
         }
     }

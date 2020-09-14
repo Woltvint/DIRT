@@ -17,6 +17,9 @@ namespace DIRT
         public static int width = 300;
         public static int height = 200;
 
+        private static readonly object inputLock = new object();
+        private static char input = ' ';
+
         public static void draw()
         {
             frame = new int[width, height];
@@ -34,7 +37,7 @@ namespace DIRT
                 }
             }
 
-            
+            Console.CursorVisible = false;
 
             Stopwatch sw = new Stopwatch();
 
@@ -122,6 +125,18 @@ namespace DIRT
                     Console.SetCursorPosition(0, height);
                     Console.WriteLine(1000 / sw.ElapsedMilliseconds);
                 }
+
+                lock (inputLock)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        input = Console.ReadKey().KeyChar;
+                    }
+                    else
+                    {
+                        input = ' ';
+                    }
+                }
             }
 
         }
@@ -164,12 +179,20 @@ namespace DIRT
         public static void drawTriangle(Triangle t, double brightness)
         {
             Vector dir = t.points[1] - t.points[0];
-            int l = (int)Math.Round(Vector.distance(t.points[0], t.points[1])) * 2;
+            int l = (int)Math.Round(Vector.distance(t.points[0], t.points[1])) * 10;
             dir = dir / l;
 
             for (int i = 0; i < l; i++)
             {
                 drawLine(t.points[0] + (dir * i),t.points[2], brightness);
+            }
+        }
+
+        public static char getInput()
+        {
+            lock (inputLock)
+            {
+                return input;
             }
         }
     }
