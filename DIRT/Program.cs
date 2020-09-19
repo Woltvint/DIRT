@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
-
 
 namespace DIRT
 {
@@ -15,26 +15,43 @@ namespace DIRT
             Console.WriteLine("path: ");
             string path = Console.ReadLine();
 
-
             Mesh m = loadFromOBJ(path);
-
             
             screenThread = new Thread(Screen.draw);
             screenThread.Start();
 
-            Thread.Sleep(100);
+            Thread.Sleep(10);
+
+            Stopwatch sw = new Stopwatch();
 
             while (true)
             {
-                //m.rotation.x += 0.001;
+                if (Screen.frameReady)
+                {
+                    continue;
+                }
+
+                sw.Reset();
+                sw.Start();
+
+                //m.rotation.x += 0.005;
                 m.rotation.y += 0.02;
-                //m.rotation.z += 0.003;
-                
+                //m.rotation.z += 0.01;
+
                 m.renderMesh();
+
+                sw.Stop();
+
+                Screen.fps = (int)sw.ElapsedMilliseconds;
+
+                if (sw.ElapsedMilliseconds < 33)
+                {
+                    Thread.Sleep(Math.Abs(33-(int)sw.ElapsedMilliseconds));
+                }
 
                 Screen.frameReady = true;
 
-
+                
                 switch(Screen.getInput())
                 {
                     case 'w':
@@ -56,16 +73,9 @@ namespace DIRT
                     case 'e':
                         m.position.y -= 1;
                         break;
-
-                    /*case 'q':
-                        m.rotation.y += 0.05;
-                        break;
-                    case 'e':
-                        m.rotation.y -= 0.05;
-                        break;*/
-
                 }
 
+                
             }
         }
 
@@ -75,6 +85,11 @@ namespace DIRT
 
             string[] lines = File.ReadAllLines(path);
 
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lines[i] = lines[i].Replace("  ", " ");
+            }
+            
             List<Vector> verts = new List<Vector>();
             List<Triangle> tris = new List<Triangle>();
 

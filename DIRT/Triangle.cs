@@ -38,6 +38,27 @@ namespace DIRT
             }
         }
 
+        public bool intersects(Vector p1,Vector p2)
+        {
+            Vector dir = p2 - p1;
+            Vector A = p1 + (dir * 1000);
+            Vector B = p1 - (dir * 1000);
+
+            if (signedVolume(A,points[0],points[1],points[2]) != signedVolume(B, points[0], points[1], points[2]))
+            {
+                if (signedVolume(A,B,points[0],points[1]) == signedVolume(A, B, points[1], points[2]) && signedVolume(A, B, points[0], points[1]) == signedVolume(A, B, points[0], points[2]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int signedVolume(Vector A, Vector B, Vector C, Vector D)
+        {
+            return Math.Sign(Vector.dot(Vector.cross(B - A, C - A), D - A));
+        }
+
         public Triangle renderTriangle(Vector pos, Vector rot)
         {
             Triangle t = new Triangle();
@@ -55,10 +76,26 @@ namespace DIRT
                 t.points[i] *= Matrix4x4.projectionMatrix();
 
                 t.points[i] += pos;
+
+                /*t.points[i] *= Matrix4x4.rotationXMatrix(Settings.globalRot.x);
+                t.points[i] *= Matrix4x4.rotationYMatrix(Settings.globalRot.y);
+                t.points[i] *= Matrix4x4.rotationZMatrix(Settings.globalRot.z);*/
             }
 
 
+
             return t;
+
+        }
+
+        public static bool operator ==(Triangle t1, Triangle t2)
+        {
+            return (t1.points[0] == t2.points[0]) && (t1.points[1] == t2.points[1]) && (t1.points[2] == t2.points[2]);
+        }
+
+        public static bool operator !=(Triangle t1, Triangle t2)
+        {
+            return (t1.points[0] != t2.points[0]) || (t1.points[1] != t2.points[1]) || (t1.points[2] != t2.points[2]);
         }
     }
 }

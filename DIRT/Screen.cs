@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace DIRT
 {
@@ -19,6 +18,10 @@ namespace DIRT
 
         private static readonly object inputLock = new object();
         private static char input = ' ';
+
+        public static int fps = 1;
+
+        public static List<Triangle> tris = new List<Triangle>();
 
         public static void draw()
         {
@@ -42,9 +45,9 @@ namespace DIRT
             Stopwatch sw = new Stopwatch();
 
             while (true)
-            {
+            {/*
                 sw.Reset();
-                sw.Start();
+                sw.Start();*/
 
 
 
@@ -100,6 +103,9 @@ namespace DIRT
                             case 4:
                                 c = '█';
                                 break;
+                            default:
+                                c = ' ';
+                                break;
                         }
 
                         sc[g] = c;
@@ -115,15 +121,24 @@ namespace DIRT
 
                 Console.SetCursorPosition(0, 0);
                 Console.Write(sc);
-
+                Console.CursorVisible = false;
+                /*
                 sw.Stop();
-
+                
                 if (sw.ElapsedMilliseconds > 0)
                 {
                     Console.SetCursorPosition(0, height);
                     Console.WriteLine("               ");
                     Console.SetCursorPosition(0, height);
                     Console.WriteLine(1000 / sw.ElapsedMilliseconds);
+                }*/
+
+                if (fps > 0)
+                {
+                    Console.SetCursorPosition(0, height);
+                    Console.WriteLine("               ");
+                    Console.SetCursorPosition(0, height);
+                    Console.WriteLine(1000 / fps);
                 }
 
                 lock (inputLock)
@@ -141,17 +156,19 @@ namespace DIRT
 
         }
 
-        public static void drawPoint(Vector p,double brightness)
+
+        public static void drawPoint(Vector p, double brightness)
         {
-            if ((int)Math.Round(p.x) < -width/2 || (int)Math.Round(p.x) > width/2 - 1)
+            if ((int)Math.Round(p.x) < -width / 2 || (int)Math.Round(p.x) > width / 2 - 1)
             {
                 return;
             }
 
-            if ((int)Math.Round(p.y) < -height/2 || (int)Math.Round(p.y) > height/2 - 1)
+            if ((int)Math.Round(p.y) < -height / 2 || (int)Math.Round(p.y) > height / 2 - 1)
             {
                 return;
             }
+
 
             lock (nextFrameLock)
             {
@@ -161,6 +178,8 @@ namespace DIRT
                     nextFrame[(int)Math.Round(p.x) + (width / 2), (int)Math.Round(p.y) + (height / 2), 1] = p.z;
                 }
             }
+
+
         }
 
         public static void drawLine(Vector p1, Vector p2, double brightness)
@@ -170,16 +189,16 @@ namespace DIRT
             dir = dir / l;
 
             for (int i = 0; i < l; i++)
-            {
-                drawPoint(p1 + (dir * i),brightness);
+            { 
+                drawPoint(p1 + (dir * i), brightness);
             }
 
         }
-
+        
         public static void drawTriangle(Triangle t, double brightness)
         {
             Vector dir = t.points[1] - t.points[0];
-            int l = (int)Math.Round(Vector.distance(t.points[0], t.points[1])) * 10;
+            int l = (int)Math.Round(Vector.distance(t.points[0], t.points[1])) * 2;
             dir = dir / l;
 
             for (int i = 0; i < l; i++)

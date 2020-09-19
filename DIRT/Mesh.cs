@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DIRT
 {
@@ -57,31 +57,20 @@ namespace DIRT
 
         public void renderMesh()
         {
-            List<Triangle> renderedTris = new List<Triangle>();
+            Triangle[] renderedTris = new Triangle[tris.Count];
 
-            foreach (Triangle t in tris)
+            
+            Parallel.ForEach(tris, (t) =>
             {
-                renderedTris.Add(t.renderTriangle(position, rotation));
-            }
+                Triangle r = t.renderTriangle(position, rotation);
+                Screen.drawTriangle(r, (Vector.angleDist(Settings.light, r.nomal) + 1) * 2);
+            });
 
-            foreach (Triangle r in renderedTris)
-            {
-                if (Vector.angleDist(Settings.camera, r.nomal) < 0)
-                {
-                    continue;
-                }
 
-                double b = (Vector.angleDist(Settings.light, r.nomal) + 1) * 2;
-                
-                /*
-                Screen.drawLine(r.points[0], r.points[1], 6);
-                Screen.drawLine(r.points[1], r.points[2], 6);
-                Screen.drawLine(r.points[0], r.points[2], 6);*/
 
-                Screen.drawTriangle(r,b);
+            //Screen.drawTriangle(t, (Vector.angleDist(Settings.light, t.nomal) + 1) * 2);
 
-            }
-
+            
         }
     }
 }
