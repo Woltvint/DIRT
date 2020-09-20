@@ -43,7 +43,7 @@ namespace DIRT
                 sw.Stop();
 
                 Screen.fps = (int)sw.ElapsedMilliseconds;
-
+                
                 if (sw.ElapsedMilliseconds < 33)
                 {
                     Thread.Sleep(Math.Abs(33-(int)sw.ElapsedMilliseconds));
@@ -81,7 +81,7 @@ namespace DIRT
 
         static Mesh loadFromOBJ(string path)
         {
-            Mesh m = new Mesh(new Vector(0,0,0),new Vector(0,0,Math.PI));
+            Mesh m = new Mesh(new Vector(0,100,180),new Vector(0,0,Math.PI));
 
             string[] lines = File.ReadAllLines(path);
 
@@ -111,13 +111,12 @@ namespace DIRT
                 {
                     string[] ver = line.Split(' ');
 
-                    Triangle t = new Triangle();
+                    Vector A = verts[Convert.ToInt32(ver[1].Split('/')[0]) - 1];
+                    Vector B = verts[Convert.ToInt32(ver[2].Split('/')[0]) - 1];
+                    Vector C = verts[Convert.ToInt32(ver[3].Split('/')[0]) - 1];
 
-                    t.points[0] = verts[Convert.ToInt32( ver[1].Split('/')[0])-1];
-                    t.points[1] = verts[Convert.ToInt32(ver[2].Split('/')[0])-1];
-                    t.points[2] = verts[Convert.ToInt32(ver[3].Split('/')[0])-1];
+                    tris.Add(new Triangle(A, B, C));
 
-                    tris.Add(t);
                 }
             }
 

@@ -7,10 +7,11 @@ namespace DIRT
     {
         public Vector position;
         public Vector rotation;
-        public List<Triangle> tris = new List<Triangle>();
+        public List<Triangle> tris;
 
         public Mesh(Vector pos,Vector rot)
         {
+            tris = new List<Triangle>();
             position = pos;
             rotation = rot;
         }
@@ -63,7 +64,7 @@ namespace DIRT
             Parallel.ForEach(tris, (t) =>
             {
                 Triangle r = t.renderTriangle(position, rotation);
-                Screen.drawTriangle(r, (Vector.angleDist(Settings.light, r.nomal) + 1) * 2);
+                Screen.drawTriangle(r, (Vector.angleDist(Settings.light, r.nomal) + 1) * (Screen.charPool.Length / 2.0));
             });
 
 

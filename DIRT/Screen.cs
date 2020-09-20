@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace DIRT
 {
@@ -23,10 +24,12 @@ namespace DIRT
 
         public static List<Triangle> tris = new List<Triangle>();
 
+        public static string[] charPool = new string[] { "  ", "░ ", "░░", "░▒", "▒▒", "▓▒", "▓▓", "▓█", "██" };
+
         public static void draw()
         {
             frame = new int[width, height];
-            
+
             lock (nextFrameLock)
             {
                 nextFrame = new double[width, height, 2];
@@ -84,7 +87,7 @@ namespace DIRT
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
-                    {
+                    {/*
                         char c = ' ';
                         switch (frame[x, y])
                         {
@@ -106,12 +109,13 @@ namespace DIRT
                             default:
                                 c = ' ';
                                 break;
-                        }
+                        }*/
 
-                        sc[g] = c;
+                        sc[g] = charPool[frame[x, y]][y % 2];
                         g++;
-                        sc[g] = c;
+                        sc[g] = charPool[frame[x, y]][(y + 1) % 2];
                         g++;
+
 
                     }
 
@@ -149,7 +153,7 @@ namespace DIRT
                     }
                     else
                     {
-                        input = ' ';
+                        input = '|';
                     }
                 }
             }
@@ -159,37 +163,41 @@ namespace DIRT
 
         public static void drawPoint(Vector p, double brightness)
         {
-            if ((int)Math.Round(p.x) < -width / 2 || (int)Math.Round(p.x) > width / 2 - 1)
+            int px = (int)Math.Round(p.x);
+            int py = (int)Math.Round(p.y);
+
+            if (px < -width / 2 || px > width / 2 - 1)
             {
                 return;
             }
 
-            if ((int)Math.Round(p.y) < -height / 2 || (int)Math.Round(p.y) > height / 2 - 1)
+            if (py < -height / 2 || py > height / 2 - 1)
             {
                 return;
             }
 
-
-            lock (nextFrameLock)
+            if (nextFrame[px + (width / 2), py + (height / 2), 1] > p.z)
             {
-                if (nextFrame[(int)Math.Round(p.x) + (width / 2), (int)Math.Round(p.y) + (height / 2), 1] > p.z)
+                if (brightness > charPool.Length - 1)
                 {
-                    nextFrame[(int)Math.Round(p.x) + (width / 2), (int)Math.Round(p.y) + (height / 2), 0] = brightness;
-                    nextFrame[(int)Math.Round(p.x) + (width / 2), (int)Math.Round(p.y) + (height / 2), 1] = p.z;
+                    brightness = charPool.Length - 1;
                 }
+                nextFrame[px + (width / 2), py + (height / 2), 0] = brightness;
+                nextFrame[px + (width / 2), py + (height / 2), 1] = p.z;
             }
-
-
         }
+
+
+    
 
         public static void drawLine(Vector p1, Vector p2, double brightness)
         {
             Vector dir = p2 - p1;
-            int l = (int)Math.Round(Vector.distance(p1, p2));
+            double l = Math.Round(Vector.distance(p1, p2));
             dir = dir / l;
 
             for (int i = 0; i < l; i++)
-            { 
+            {
                 drawPoint(p1 + (dir * i), brightness);
             }
 
@@ -197,15 +205,52 @@ namespace DIRT
         
         public static void drawTriangle(Triangle t, double brightness)
         {
-            Vector dir = t.points[1] - t.points[0];
-            int l = (int)Math.Round(Vector.distance(t.points[0], t.points[1])) * 2;
-            dir = dir / l;
-
-            for (int i = 0; i < l; i++)
+            if ((!testPoint(t.points[0])) && (!testPoint(t.points[1])) && (!testPoint(t.points[2])))
             {
-                drawLine(t.points[0] + (dir * i),t.points[2], brightness);
+                return;
+            }
+
+            if (Vector.angleDist(Settings.camera, t.nomal) < 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                Vector dir = t.points[(i+1)%3] - t.points[i];
+                double l = (Math.Round(Vector.distance(t.points[i], t.points[(i+1)%3])));
+                dir = dir / l;
+
+                for (int j = 0; j < l; j++)
+                {
+                    drawLine(t.points[i] + (dir * j), t.points[(i+2)%3], brightness);
+                }
             }
         }
+
+        public static bool testPoint(Vector point)
+        {
+            int px = (int)Math.Round(point.x);
+            int py = (int)Math.Round(point.y);
+
+            if (px < -width / 2 || px > width / 2 - 1)
+            {
+                return false;
+            }
+
+            if (py < -height / 2 || py > height / 2 - 1)
+            {
+                return false ;
+            }
+
+            if (point.z < 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
 
         public static char getInput()
         {

@@ -2,14 +2,9 @@
 
 namespace DIRT
 {
-    public class Matrix4x4
+    public struct Matrix4x4
     {
         public double[,] m;
-        
-        public Matrix4x4()
-        {
-            m = new double[4, 4];
-        }
 
         public Matrix4x4(double[,] mat)
         {
@@ -41,7 +36,7 @@ namespace DIRT
 
         public static Matrix4x4 rotationXMatrix(double rot)
         {
-            Matrix4x4 rotMat = new Matrix4x4();
+            Matrix4x4 rotMat = new Matrix4x4(new double[4, 4]);
             rotMat.m[0, 0] = 1;
             rotMat.m[1, 1] = Math.Cos(rot);
             rotMat.m[1, 2] = Math.Sin(rot);
@@ -54,7 +49,7 @@ namespace DIRT
 
         public static Matrix4x4 rotationYMatrix(double rot)
         {
-            Matrix4x4 rotMat = new Matrix4x4();
+            Matrix4x4 rotMat = new Matrix4x4(new double[4, 4]);
             rotMat.m[0, 0] = Math.Cos(rot);
             rotMat.m[0, 2] = Math.Sin(rot);
             rotMat.m[2, 0] = -Math.Sin(rot);
@@ -67,7 +62,7 @@ namespace DIRT
 
         public static Matrix4x4 rotationZMatrix(double rot)
         {
-            Matrix4x4 rotMat = new Matrix4x4();
+            Matrix4x4 rotMat = new Matrix4x4(new double[4, 4]);
             rotMat.m[0, 0] = Math.Cos(rot);
             rotMat.m[0, 1] = Math.Sin(rot);
             rotMat.m[1, 0] = -Math.Sin(rot);
@@ -80,7 +75,7 @@ namespace DIRT
 
         public static Matrix4x4 operator *(Matrix4x4 m1, Matrix4x4 m2)
         {
-            Matrix4x4 matrix = new Matrix4x4();
+            Matrix4x4 matrix = new Matrix4x4(new double[4, 4]);
             for (int c = 0; c < 4; c++)
             {
                 for (int r = 0; r < 4; r++)

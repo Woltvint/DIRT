@@ -1,17 +1,15 @@
 ﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace DIRT
 {
-    class Triangle
+    struct Triangle
     {
-        public Vector[] points = new Vector[3];
-
-        public Triangle()
-        {
-        }
+        public Vector[] points;
 
         public Triangle(Vector p1, Vector p2, Vector p3)
         {
+            points = new Vector[3];
             points[0] = p1;
             points[1] = p2;
             points[2] = p3;
@@ -59,23 +57,39 @@ namespace DIRT
             return Math.Sign(Vector.dot(Vector.cross(B - A, C - A), D - A));
         }
 
+        private static bool sameSide(Vector p1,Vector p2, Vector A,Vector B)
+        {
+            Vector cp1 = Vector.cross(B - A, p1 - A);
+            Vector cp2 = Vector.cross(B - A, p2 - A);
+            return Vector.dot(cp1, cp2) >= 0;
+        }
+
+        public bool inside(Vector p)
+        {
+            Vector A = new Vector(points[0].x, points[0].y, 0);
+            Vector B = new Vector(points[1].x, points[1].y, 0);
+            Vector C = new Vector(points[2].x, points[2].y, 0);
+
+            return sameSide(p, A, B, C) && sameSide(p, B, A, C) && sameSide(p, C, A, B);
+        }
+
         public Triangle renderTriangle(Vector pos, Vector rot)
         {
             Triangle t = new Triangle();
+            t.points = new Vector[3];
 
             for (int i = 0; i < 3; i++)
             {
                 t.points[i] = points[i];
 
                 t.points[i] *= Settings.scale;
-
+                
                 t.points[i] *= Matrix4x4.rotationXMatrix(rot.x);
                 t.points[i] *= Matrix4x4.rotationYMatrix(rot.y);
                 t.points[i] *= Matrix4x4.rotationZMatrix(rot.z);
-                
-                t.points[i] *= Matrix4x4.projectionMatrix();
 
                 t.points[i] += pos;
+                t.points[i] *= Matrix4x4.projectionMatrix();
 
                 /*t.points[i] *= Matrix4x4.rotationXMatrix(Settings.globalRot.x);
                 t.points[i] *= Matrix4x4.rotationYMatrix(Settings.globalRot.y);

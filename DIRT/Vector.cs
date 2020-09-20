@@ -2,19 +2,11 @@
 
 namespace DIRT
 {
-    public class Vector
+    public struct Vector
     {
         public double x, y, z, w;
 
         #region constructors
-
-        public Vector()
-        {
-            x = 0;
-            y = 0;
-            z = 0;
-            w = 1;
-        }
 
         public Vector(double _x)
         {
@@ -46,6 +38,14 @@ namespace DIRT
             y = _y;
             z = _z;
             w = _w;
+        }
+
+        public Vector(Vector v)
+        {
+            x = v.x;
+            y = v.y;
+            z = v.z;
+            w = v.w;
         }
 
         #endregion

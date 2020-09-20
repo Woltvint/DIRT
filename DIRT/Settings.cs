@@ -20,7 +20,7 @@ namespace DIRT
 
         public static double fov = Math.PI/2;
 
-        public static double scale = 1;
+        public static double scale = 17.9;
 
         public static Vector camera = new Vector(0,0,-1);
         public static Vector light = new Vector(-1,-1,-1);
