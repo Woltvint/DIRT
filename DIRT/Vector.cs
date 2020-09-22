@@ -89,7 +89,13 @@ namespace DIRT
 
         public static double angleDist(Vector v1, Vector v2)
         {
-            return Vector.dot(v1, v2) / (v1.magnitude * v2.magnitude);
+            Vector A = v1.normalized;
+            Vector B = v2.normalized;
+            return dot(A, B);
+
+            
+
+            
         }
 
         #region operators
@@ -133,10 +139,12 @@ namespace DIRT
         {
             Vector o = new Vector(0, 0, 0, 0);
 
+
             o.x = i.x * m.m[0, 0] + i.y * m.m[1, 0] + i.z * m.m[2, 0] + i.w * m.m[3, 0];
             o.y = i.x * m.m[0, 1] + i.y * m.m[1, 1] + i.z * m.m[2, 1] + i.w * m.m[3, 1];
             o.z = i.x * m.m[0, 2] + i.y * m.m[1, 2] + i.z * m.m[2, 2] + i.w * m.m[3, 2];
             o.w = i.x * m.m[0, 3] + i.y * m.m[1, 3] + i.z * m.m[2, 3] + i.w * m.m[3, 3];
+            
 
             return o;
         }
@@ -149,5 +157,6 @@ namespace DIRT
         public static Vector right = new Vector(1, 0, 0);
         public static Vector up = new Vector(0, 1, 0);
         public static Vector down = new Vector(0, -1, 0);
+        public static Vector zero = new Vector(0, 0, 0, 0);
     }
 }

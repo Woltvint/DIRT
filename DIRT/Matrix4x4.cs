@@ -17,19 +17,26 @@ namespace DIRT
             double far = Settings.zFar;
             double near = Settings.zNear;
             double a = Settings.aspectRatio;
-            double fov = Settings.fov;
+            double f = 1 / Math.Tan(Settings.fov / 2);
+            double q = far / (far - near);
 
-            Matrix4x4 m = new Matrix4x4();
+            Matrix4x4 m = new Matrix4x4(new double[4, 4]);
 
-            //m.m[0, 0] = a * (1 / Math.Tan(fov / 2));
+            m.m[0, 0] = a * f;
+            m.m[1, 1] = f;
+            m.m[2, 2] = q;
+            m.m[2, 3] = -near * q;
+            m.m[3, 2] = 1;
 
+            return m;
+            /*
             return new Matrix4x4(new double[,]
                 {
                     {a * (1/Math.Tan(fov/2)),0,0,0 },
                     {0 ,1/Math.Tan(fov/2),0,0 },
                     {0 ,0 ,far / (far - near),1 },
                     {0 ,0 ,(-far*near) / (far - near),0 },
-                });
+                });*/
 
 
         }

@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace DIRT
 {
-    class Mesh
+    public class Mesh
     {
         public Vector position;
         public Vector rotation;
@@ -56,22 +59,56 @@ namespace DIRT
             tris.Add(new Triangle(B, D, C));
         }
 
+        public void makeFromOBJ(string path)
+        {
+            string[] lines = File.ReadAllLines(path);
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lines[i] = lines[i].Replace("  ", " ");
+            }
+
+            List<Vector> ver = new List<Vector>();
+            List<Triangle> tri = new List<Triangle>();
+
+            foreach (string line in lines)
+            {
+                if (line.StartsWith("v "))
+                {
+                    string[] coords = line.Split(' ');
+                    Vector v = new Vector();
+
+                    v.x = Convert.ToDouble(coords[1]);
+                    v.y = Convert.ToDouble(coords[2]);
+                    v.z = Convert.ToDouble(coords[3]);
+
+                    ver.Add(v);
+                }
+
+                if (line.StartsWith("f "))
+                {
+                    string[] v = line.Split(' ');
+
+                    Vector A = ver[Convert.ToInt32(v[1].Split('/')[0]) - 1];
+                    Vector B = ver[Convert.ToInt32(v[2].Split('/')[0]) - 1];
+                    Vector C = ver[Convert.ToInt32(v[3].Split('/')[0]) - 1];
+
+                    tri.Add(new Triangle(A, B, C));
+
+                }
+            }
+
+            tris = tri;
+
+            
+        }
+
         public void renderMesh()
         {
-            Triangle[] renderedTris = new Triangle[tris.Count];
-
-            
             Parallel.ForEach(tris, (t) =>
             {
-                Triangle r = t.renderTriangle(position, rotation);
-                Screen.drawTriangle(r, (Vector.angleDist(Settings.light, r.nomal) + 1) * (Screen.charPool.Length / 2.0));
-            });
-
-
-
-            //Screen.drawTriangle(t, (Vector.angleDist(Settings.light, t.nomal) + 1) * 2);
-
-            
+                t.renderTriangle(position, rotation);
+            }); 
         }
     }
 }

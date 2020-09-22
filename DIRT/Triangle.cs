@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Runtime.InteropServices.ComTypes;
 
 namespace DIRT
 {
-    struct Triangle
+    public struct Triangle
     {
         public Vector[] points;
 
@@ -73,32 +74,60 @@ namespace DIRT
             return sameSide(p, A, B, C) && sameSide(p, B, A, C) && sameSide(p, C, A, B);
         }
 
-        public Triangle renderTriangle(Vector pos, Vector rot)
+        public void renderTriangle(Vector pos, Vector rot)
         {
             Triangle t = new Triangle();
             t.points = new Vector[3];
 
+
             for (int i = 0; i < 3; i++)
             {
-                t.points[i] = points[i];
+                t.points[i] = new Vector(points[i]);
 
-                t.points[i] *= Settings.scale;
-                
+                //t.points[i] *= Settings.scale;
+
                 t.points[i] *= Matrix4x4.rotationXMatrix(rot.x);
                 t.points[i] *= Matrix4x4.rotationYMatrix(rot.y);
                 t.points[i] *= Matrix4x4.rotationZMatrix(rot.z);
 
                 t.points[i] += pos;
-                t.points[i] *= Matrix4x4.projectionMatrix();
 
-                /*t.points[i] *= Matrix4x4.rotationXMatrix(Settings.globalRot.x);
+                t.points[i] *= Matrix4x4.rotationXMatrix(Settings.globalRot.x);
                 t.points[i] *= Matrix4x4.rotationYMatrix(Settings.globalRot.y);
-                t.points[i] *= Matrix4x4.rotationZMatrix(Settings.globalRot.z);*/
+                t.points[i] *= Matrix4x4.rotationZMatrix(Settings.globalRot.z);
+
+                //t.points[i] += new Vector(0, 0, 3, 0);
             }
 
+            double z = (t.points[0].z + t.points[1].z + t.points[2].z)/3;
+
+            if (z < 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+
+                t.points[i] *= Matrix4x4.projectionMatrix();
+
+                if (t.points[i].w != 0)
+                {
+                    t.points[i].x /= t.points[i].w / 5;
+                    t.points[i].y /= t.points[i].w / 5;
+                    t.points[i].z /= t.points[i].w / 5;
+                }
+
+                t.points[i] += new Vector(1, 0, 0, 0);
+                t.points[i].x *= 0.5 * Settings.width;
+                t.points[i].y *= 0.5 * Settings.height;
 
 
-            return t;
+            }
+
+            double b = Math.Round(((Vector.angleDist(Settings.light, t.nomal) + 1) / 2) * 8);
+
+            Screen.drawTriangle(t, b);
 
         }
 

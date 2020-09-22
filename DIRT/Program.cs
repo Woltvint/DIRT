@@ -1,129 +1,95 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+using System.Net.Http.Headers;
 using System.Threading;
 
 namespace DIRT
 {
     class Program
     {
-
-        static Thread screenThread;
         static void Main(string[] args)
         {
-            Console.WriteLine("path: ");
-            string path = Console.ReadLine();
+            DIRT.startRenderer();
+            /*
+            Mesh m = new Mesh(new Vector(0,-0.5,3), Vector.zero);
+            m.makeFromOBJ("./skull.obj");
+            m.rotation.z = Math.PI/90;
+            m.rotation.y = Math.PI;
 
-            Mesh m = loadFromOBJ(path);
+            DIRT.Meshes.Add(m);
+
             
-            screenThread = new Thread(Screen.draw);
-            screenThread.Start();
+            Mesh m3 = new Mesh(new Vector(2, -3, 2), Vector.zero);
+            //m3.makeFromOBJ("./d.obj");
+            m3.rotation.z = Math.PI / 90;
+            m3.rotation.y = Math.PI;*/
 
-            Thread.Sleep(10);
+            //DIRT.Meshes.Add(m3);
 
-            Stopwatch sw = new Stopwatch();
+            Random rnd = new Random();
+
+            Mesh[] mesh = new Mesh[10];
+            Vector[] r = new Vector[10];
+
+            for (int i = 0; i < mesh.Length; i++)
+            {
+                double rot = rnd.NextDouble() * Math.PI*2;
+                double y = (rnd.NextDouble() -0.5) * 10;
+                double dist = (rnd.NextDouble() * 20) + 5;
+
+
+                mesh[i] = new Mesh(new Vector(Math.Cos(rot)*dist,y, Math.Sin(rot) * dist),Vector.zero);
+
+                if (rnd.Next(0,100) > 50)
+                {
+                    mesh[i].makePyramid((rnd.NextDouble() * 1) + 0.5);
+                }
+                else
+                {
+                    mesh[i].makeCube((rnd.NextDouble() * 1) + 0.5);
+                }
+
+                
+
+                DIRT.Meshes.Add(mesh[i]);
+
+                r[i] = new Vector((rnd.NextDouble() - 0.5) / 20, (rnd.NextDouble() - 0.5) / 20, (rnd.NextDouble() - 0.5) / 20);
+            }
+
+            Mesh sphere = new Mesh(new Vector(0,0,3),Vector.zero);
+
+            //sphere.makeFromOBJ("./sphere.obj");
+
+            DIRT.Meshes.Add(sphere);
+
+
 
             while (true)
             {
-                if (Screen.frameReady)
+                Thread.Sleep(33);
+
+                lock (DIRT.renderLock)
                 {
-                    continue;
+                    Settings.globalRot.y += 0.002;
+
+                    for (int i = 0; i < mesh.Length; i++)
+                    {
+                        mesh[i].rotation += r[i];
+                    }
                 }
 
-                sw.Reset();
-                sw.Start();
-
-                //m.rotation.x += 0.005;
-                m.rotation.y += 0.02;
-                //m.rotation.z += 0.01;
-
-                m.renderMesh();
-
-                sw.Stop();
-
-                Screen.fps = (int)sw.ElapsedMilliseconds;
-                
-                if (sw.ElapsedMilliseconds < 33)
+                switch (Screen.getInput())
                 {
-                    Thread.Sleep(Math.Abs(33-(int)sw.ElapsedMilliseconds));
+
                 }
 
-                Screen.frameReady = true;
-
-                
-                switch(Screen.getInput())
-                {
-                    case 'w':
-                        Settings.scale += 0.1;
-                        break;
-                    case 's':
-                        Settings.scale -= 0.1;
-                        break;
-
-                    case 'a':
-                        m.position.x += 1;
-                        break;
-                    case 'd':
-                        m.position.x -= 1;
-                        break;
-                    case 'q':
-                        m.position.y += 1;
-                        break;
-                    case 'e':
-                        m.position.y -= 1;
-                        break;
-                }
-
-                
             }
-        }
 
-        static Mesh loadFromOBJ(string path)
-        {
-            Mesh m = new Mesh(new Vector(0,100,180),new Vector(0,0,Math.PI));
-
-            string[] lines = File.ReadAllLines(path);
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                lines[i] = lines[i].Replace("  ", " ");
-            }
             
-            List<Vector> verts = new List<Vector>();
-            List<Triangle> tris = new List<Triangle>();
+            
 
-            foreach (string line in lines)
-            {
-                if (line.StartsWith("v "))
-                {
-                    string[] coords = line.Split(' ');
-                    Vector v = new Vector();
 
-                    v.x = Convert.ToDouble(coords[1])*10;
-                    v.y = Convert.ToDouble(coords[2])*10;
-                    v.z = Convert.ToDouble(coords[3])*10;
-
-                    verts.Add(v);
-                }
-
-                if (line.StartsWith("f "))
-                {
-                    string[] ver = line.Split(' ');
-
-                    Vector A = verts[Convert.ToInt32(ver[1].Split('/')[0]) - 1];
-                    Vector B = verts[Convert.ToInt32(ver[2].Split('/')[0]) - 1];
-                    Vector C = verts[Convert.ToInt32(ver[3].Split('/')[0]) - 1];
-
-                    tris.Add(new Triangle(A, B, C));
-
-                }
-            }
-
-            m.tris = tris;
-
-            return m;
 
         }
     }
+
 }

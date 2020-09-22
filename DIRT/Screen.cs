@@ -25,6 +25,7 @@ namespace DIRT
         public static List<Triangle> tris = new List<Triangle>();
 
         public static string[] charPool = new string[] { "  ", "░ ", "░░", "░▒", "▒▒", "▓▒", "▓▓", "▓█", "██" };
+        //public static string[] charPool = new string[] { "  ", "░░",  "▒▒",  "▓▓",  "██" };
 
         public static void draw()
         {
@@ -110,12 +111,16 @@ namespace DIRT
                                 c = ' ';
                                 break;
                         }*/
-
+                        
                         sc[g] = charPool[frame[x, y]][y % 2];
                         g++;
                         sc[g] = charPool[frame[x, y]][(y + 1) % 2];
                         g++;
-
+                        /*
+                        sc[g] = frame[x, y].ToString()[0];
+                        g++;
+                        sc[g] = frame[x, y].ToString()[0];
+                        g++;*/
 
                     }
 
@@ -142,7 +147,7 @@ namespace DIRT
                     Console.SetCursorPosition(0, height);
                     Console.WriteLine("               ");
                     Console.SetCursorPosition(0, height);
-                    Console.WriteLine(1000 / fps);
+                    Console.WriteLine(fps);
                 }
 
                 lock (inputLock)
@@ -176,15 +181,28 @@ namespace DIRT
                 return;
             }
 
+            if (brightness > charPool.Length - 1)
+            {
+                brightness = charPool.Length - 1;
+            }
+            if (brightness < 0)
+            {
+                brightness = 0;
+            }
+
             if (nextFrame[px + (width / 2), py + (height / 2), 1] > p.z)
             {
-                if (brightness > charPool.Length - 1)
-                {
-                    brightness = charPool.Length - 1;
-                }
                 nextFrame[px + (width / 2), py + (height / 2), 0] = brightness;
                 nextFrame[px + (width / 2), py + (height / 2), 1] = p.z;
             }
+            /*else if (nextFrame[px + (width / 2), py + (height / 2), 1] == p.z)
+            {
+                if (nextFrame[px + (width / 2), py + (height / 2), 1] > brightness)
+                {
+                    nextFrame[px + (width / 2), py + (height / 2), 0] = brightness;
+                    nextFrame[px + (width / 2), py + (height / 2), 1] = p.z;
+                }
+            }*/
         }
 
 
@@ -242,8 +260,8 @@ namespace DIRT
             {
                 return false ;
             }
-
-            if (point.z < 0)
+            
+            if (point.z > 0)
             {
                 return false;
             }
