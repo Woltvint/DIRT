@@ -44,14 +44,16 @@ namespace DIRT
 
                 sw.Reset();
                 sw.Start();
-
+                
                 lock (renderLock)
-                {
+                {/*
                     Parallel.ForEach(Meshes, (m) =>
                     {
                         m.renderMesh();
-                    });
+                    });*/
+                    Screen.raycast();
                 }
+
                 
 
                 sw.Stop();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DIRT
 {
@@ -14,8 +15,8 @@ namespace DIRT
 
         public static bool frameReady = false;
 
-        public static int width = 300;
-        public static int height = 200;
+        public static int width = 100;
+        public static int height = 100;
 
         private static readonly object inputLock = new object();
         private static char input = ' ';
@@ -26,6 +27,8 @@ namespace DIRT
 
         public static string[] charPool = new string[] { "  ", "░ ", "░░", "░▒", "▒▒", "▓▒", "▓▓", "▓█", "██" };
         //public static string[] charPool = new string[] { "  ", "░░",  "▒▒",  "▓▓",  "██" };
+
+        private static bool isRunningBlink = false;
 
         public static void draw()
         {
@@ -77,7 +80,21 @@ namespace DIRT
                             }
                         }
                     }
+                    /*
+                    isRunningBlink = !isRunningBlink;
 
+                    Console.SetCursorPosition(0, height + 3);
+
+                    if (isRunningBlink)
+                    {
+
+                        Console.Write('#');
+                    }
+                    else
+                    {
+                        Console.Write(' ');
+                    }
+                    */
                     frameReady = false;
                 }
 
@@ -131,6 +148,9 @@ namespace DIRT
                 Console.SetCursorPosition(0, 0);
                 Console.Write(sc);
                 Console.CursorVisible = false;
+
+                
+
                 /*
                 sw.Stop();
                 
@@ -228,7 +248,7 @@ namespace DIRT
                 return;
             }
 
-            if (Vector.angleDist(Settings.camera, t.nomal) < 0)
+            if (Vector.angleDist(Settings.camera, t.normal) < 0)
             {
                 return;
             }
@@ -275,6 +295,87 @@ namespace DIRT
             lock (inputLock)
             {
                 return input;
+            }
+        }
+
+
+        public static Vector eye = new Vector(0, 0, 0, 0);
+        public static Vector dir = new Vector(0,0,1,0);
+
+        public static void raycast()
+        {
+            Vector direction = dir * 1;
+
+            Ray[] rays = new Ray[width * height];
+            
+            double f = 0.01;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Vector pos = direction + new Vector((x-(width/2)) * f, (y - (height / 2)) * f, 0,0);
+                    pos *= Matrix4x4.rotationYMatrix(Settings.cameraRot.y);
+                    pos += eye;
+
+                    rays[x + (y * width)] = new Ray(eye, pos);
+
+                }
+            }
+
+            List<Triangle> prepTris = new List<Triangle>();
+            List<Triangle> tris = new List<Triangle>();
+
+            foreach (Mesh m in DIRT.Meshes)
+            {
+                prepTris.AddRange(m.getTris());
+            }
+
+            foreach (Triangle t in prepTris)
+            {
+                if (Vector.angleDist(direction * Matrix4x4.rotationYMatrix(Settings.cameraRot.y), t.middle) > 0.3)
+                {
+                    tris.Add(t);
+                }
+            }
+
+
+
+            tris.Sort(CompareTriangleDistance);
+            
+            Parallel.For(0, rays.Length, (i) =>
+            {
+                 rays[i].cast(tris);
+            });
+            
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    drawPoint(new Vector(x - (width / 2), y - (height / 2), 0,0), rays[x + (y * width)].result);
+                }
+            }
+        }
+
+        static int CompareTriangleDistance(Triangle t1, Triangle t2)
+        {
+            double dist1 = Vector.distance(t1.middle, eye);
+            double dist2 = Vector.distance(t2.middle, eye);
+
+            if (dist1 == dist2)
+            {
+                return 0;
+            }
+            else
+            {
+                if (dist1 < dist2)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
             }
         }
     }

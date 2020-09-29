@@ -1,6 +1,9 @@
 ﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
 using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography;
 
 namespace DIRT
 {
@@ -21,36 +24,91 @@ namespace DIRT
             points = ps;
         }
 
-        public Vector nomal
+        public Vector normal
         {
             get
             {
-                Vector normal = new Vector(0, 0, 0);
                 Vector u = points[1] - points[0];
                 Vector v = points[2] - points[0];
 
-                normal.x = (u.y * v.z) - (u.z * v.y);
-                normal.y = (u.z * v.x) - (u.x * v.z);
-                normal.z = (u.x * v.y) - (u.y * v.x);
-
-                return normal.normalized;
+                return Vector.cross(u,v).normalized;
             }
         }
 
-        public bool intersects(Vector p1,Vector p2)
+        public Vector middle
         {
-            Vector dir = p2 - p1;
-            Vector A = p1 + (dir * 1000);
-            Vector B = p1 - (dir * 1000);
-
-            if (signedVolume(A,points[0],points[1],points[2]) != signedVolume(B, points[0], points[1], points[2]))
+            get
             {
-                if (signedVolume(A,B,points[0],points[1]) == signedVolume(A, B, points[1], points[2]) && signedVolume(A, B, points[0], points[1]) == signedVolume(A, B, points[0], points[2]))
-                {
-                    return true;
-                }
+                return ((points[0] + points[1] + points[2]) / 3);
             }
-            return false;
+        }
+
+        public bool intersects(Vector origin,Vector dir)
+        {
+            Vector N = normal;
+            
+            if (Vector.angleDist(dir, N) > 0)
+            {
+                return false;
+            }
+
+            double NdotRayDir = Vector.dot(N,dir);
+            
+            if (Math.Abs(NdotRayDir) < 0.0001)
+            {
+                return false;
+            }
+
+            Vector A = points[0];
+            Vector B = points[1];
+            Vector C = points[2];
+
+            double D = Vector.dot(N, A);
+
+            double t = (Vector.dot(N, origin) - D) / -NdotRayDir;
+
+            if (t < 0)
+            {
+                return false;
+            }
+
+            Vector P = origin + (dir * t);
+
+            Vector c;
+
+            Vector Edge0 = B - A;
+            Vector AP = P - A;
+
+            c = Vector.cross(Edge0,AP);
+
+            if (Vector.dot(N,c) < 0)
+            {
+                return false;
+            }
+
+
+            Vector Edge1 = C - B;
+            Vector BP = P - B;
+
+            c = Vector.cross(Edge1, BP);
+
+            if (Vector.dot(N, c) < 0)
+            {
+                return false;
+            }
+
+
+            Vector Edge2 = A - C;
+            Vector CP = P - C;
+
+            c = Vector.cross(Edge2, CP);
+
+            if (Vector.dot(N, c) < 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private int signedVolume(Vector A, Vector B, Vector C, Vector D)
@@ -125,7 +183,7 @@ namespace DIRT
 
             }
 
-            double b = Math.Round(((Vector.angleDist(Settings.light, t.nomal) + 1) / 2) * 8);
+            double b = Math.Round(((Vector.angleDist(Settings.light, t.normal) + 1) / 2) * 8);
 
             Screen.drawTriangle(t, b);
 

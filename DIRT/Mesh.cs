@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace DIRT
@@ -101,6 +102,29 @@ namespace DIRT
             tris = tri;
 
             
+        }
+
+        public List<Triangle> getTris()
+        {
+            List<Triangle> trisToRet = new List<Triangle>();
+
+            foreach (Triangle t in tris)
+            {
+                Triangle tr = new Triangle(Vector.zero,Vector.zero,Vector.zero);
+
+                for (int i = 0; i < 3; i++)
+                {
+                    tr.points[i] = t.points[i] * Matrix4x4.rotationXMatrix(rotation.x);
+                    tr.points[i] = tr.points[i] * Matrix4x4.rotationYMatrix(rotation.y);
+                    tr.points[i] = tr.points[i] * Matrix4x4.rotationZMatrix(rotation.z);
+
+                    tr.points[i] += position;
+                }
+
+                trisToRet.Add(tr);
+            }
+
+            return trisToRet;
         }
 
         public void renderMesh()

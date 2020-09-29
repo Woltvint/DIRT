@@ -54,7 +54,7 @@ namespace DIRT
         {
             get
             {
-                return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2) + Math.Pow(w, 2));
+                return Math.Sqrt((x*x) + (y*y) + (z*z) + (w*w));
             }
         }
 
@@ -92,10 +92,6 @@ namespace DIRT
             Vector A = v1.normalized;
             Vector B = v2.normalized;
             return dot(A, B);
-
-            
-
-            
         }
 
         #region operators

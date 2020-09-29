@@ -23,7 +23,8 @@ namespace DIRT
         public static double scale = /*17.9*/1;
 
         public static Vector camera = new Vector(0,0,-1);
-        public static Vector light = new Vector(-1,-1,-0.5);
+        public static Vector cameraRot = new Vector(0, 0, 0);
+        public static Vector light = new Vector(1,1,1);
 
         public static Vector globalRot = new Vector(0, 0, 0, 0);
     }
