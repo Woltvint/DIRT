@@ -68,7 +68,12 @@ namespace DIRT
 
         public static double distance(Vector from, Vector to)
         {
-            return Math.Sqrt(Math.Pow(from.x - to.x,2) + Math.Pow(from.y - to.y, 2) + Math.Pow(from.z - to.z, 2) + Math.Pow(from.w - to.w, 2));
+            double _x = from.x - to.x;
+            double _y = from.y - to.y;
+            double _z = from.z - to.z;
+            double _w = from.w - to.w;
+
+            return Math.Sqrt((_x*_x) + (_y*_y) + (_z*_z) + (_w*_w));
         }
 
         public static Vector cross(Vector v1, Vector v2)
