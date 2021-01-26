@@ -4,8 +4,9 @@ using System;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
+using DIRT.Types;
 
-namespace DIRT
+namespace DIRT.Types
 {
     public struct Triangle
     {
@@ -52,9 +53,9 @@ namespace DIRT
                 return false;
             }
 
-            double NdotRayDir = Vector.dot(N,dir);
+            float NdotRayDir = Vector.dot(N,dir);
             
-            if (Math.Abs(NdotRayDir) < 0.0001)
+            if (MathF.Abs(NdotRayDir) < 0.0001)
             {
                 return false;
             }
@@ -63,9 +64,9 @@ namespace DIRT
             Vector B = points[1];
             Vector C = points[2];
 
-            double D = Vector.dot(N, A);
+            float D = Vector.dot(N, A);
 
-            double t = (Vector.dot(N, origin) - D) / -NdotRayDir;
+            float t = (Vector.dot(N, origin) - D) / -NdotRayDir;
 
             if (t < 0)
             {
@@ -113,7 +114,7 @@ namespace DIRT
 
         private int signedVolume(Vector A, Vector B, Vector C, Vector D)
         {
-            return Math.Sign(Vector.dot(Vector.cross(B - A, C - A), D - A));
+            return MathF.Sign(Vector.dot(Vector.cross(B - A, C - A), D - A));
         }
 
         private static bool sameSide(Vector p1,Vector p2, Vector A,Vector B)
@@ -157,7 +158,7 @@ namespace DIRT
                 //t.points[i] += new Vector(0, 0, 3, 0);
             }
 
-            double z = (t.points[0].z + t.points[1].z + t.points[2].z)/3;
+            float z = (t.points[0].z + t.points[1].z + t.points[2].z)/3;
 
             if (z < 0)
             {
@@ -177,13 +178,13 @@ namespace DIRT
                 }
 
                 t.points[i] += new Vector(1, 0, 0, 0);
-                t.points[i].x *= 0.5 * Settings.width;
-                t.points[i].y *= 0.5 * Settings.height;
+                t.points[i].x *= 0.5f * Settings.screenWidth;
+                t.points[i].y *= 0.5f * Settings.screenHeight;
 
 
             }
 
-            double b = Math.Round(((Vector.angleDist(Settings.light, t.normal) + 1) / 2) * 8);
+            float b = (int)MathF.Round(((Vector.angleDist(Settings.light, this.normal) + 1) / 2) * 8);
 
             Screen.drawTriangle(t, b);
 
@@ -198,5 +199,21 @@ namespace DIRT
         {
             return (t1.points[0] != t2.points[0]) || (t1.points[1] != t2.points[1]) || (t1.points[2] != t2.points[2]);
         }
+
+        public tris toTris()
+        {
+            tris o = new tris();
+            o.p1 = points[0].toVec();
+            o.p2 = points[1].toVec();
+            o.p3 = points[2].toVec();
+            return o;
+        }
+    }
+
+    public struct tris
+    {
+        public vec p1;
+        public vec p2;
+        public vec p3;
     }
 }

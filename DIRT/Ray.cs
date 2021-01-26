@@ -1,8 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using DIRT.Types;
 
 namespace DIRT
 {
@@ -26,7 +26,7 @@ namespace DIRT
             {
                 if(tri[i].intersects(origin,direction))
                 {
-                    result = (int)Math.Round(((Vector.angleDist(Settings.light, tri[i].normal) + 1) / 2) * 8);
+                    result = (int)MathF.Round(((Vector.angleDist(Settings.light, tri[i].normal) + 1) / 2) * 8);
                     return;
                 }
             }

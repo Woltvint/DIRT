@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace DIRT
+namespace DIRT.Types
 {
     public struct Vector
     {
-        public double x, y, z, w;
+        public float x, y, z, w;
 
         #region constructors
 
-        public Vector(double _x)
+        public Vector(float _x)
         {
             x = _x;
             y = 0;
@@ -16,7 +16,7 @@ namespace DIRT
             w = 1;
         }
 
-        public Vector(double _x, double _y)
+        public Vector(float _x, float _y)
         {
             x = _x;
             y = _y;
@@ -24,7 +24,7 @@ namespace DIRT
             w = 1;
         }
 
-        public Vector(double _x, double _y, double _z)
+        public Vector(float _x, float _y, float _z)
         {
             x = _x;
             y = _y;
@@ -32,7 +32,7 @@ namespace DIRT
             w = 1;
         }
 
-        public Vector(double _x, double _y, double _z, double _w)
+        public Vector(float _x, float _y, float _z, float _w)
         {
             x = _x;
             y = _y;
@@ -50,11 +50,11 @@ namespace DIRT
 
         #endregion
 
-        public double magnitude
+        public float magnitude
         {
             get
             {
-                return Math.Sqrt((x*x) + (y*y) + (z*z) + (w*w));
+                return MathF.Sqrt((x*x) + (y*y) + (z*z) + (w*w));
             }
         }
 
@@ -66,14 +66,14 @@ namespace DIRT
             }
         }
 
-        public static double distance(Vector from, Vector to)
+        public static float distance(Vector from, Vector to)
         {
-            double _x = from.x - to.x;
-            double _y = from.y - to.y;
-            double _z = from.z - to.z;
-            double _w = from.w - to.w;
+            float _x = from.x - to.x;
+            float _y = from.y - to.y;
+            float _z = from.z - to.z;
+            float _w = from.w - to.w;
 
-            return Math.Sqrt((_x*_x) + (_y*_y) + (_z*_z) + (_w*_w));
+            return MathF.Sqrt((_x*_x) + (_y*_y) + (_z*_z) + (_w*_w));
         }
 
         public static Vector cross(Vector v1, Vector v2)
@@ -87,12 +87,12 @@ namespace DIRT
             return v;
         }
 
-        public static double dot(Vector v1, Vector v2)
+        public static float dot(Vector v1, Vector v2)
         {
             return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
         }
 
-        public static double angleDist(Vector v1, Vector v2)
+        public static float angleDist(Vector v1, Vector v2)
         {
             Vector A = v1.normalized;
             Vector B = v2.normalized;
@@ -116,12 +116,12 @@ namespace DIRT
             return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
         }
 
-        public static Vector operator *(Vector v1, double m)
+        public static Vector operator *(Vector v1, float m)
         {
             return new Vector(v1.x *m, v1.y * m, v1.z * m, v1.w * m);
         }
 
-        public static Vector operator /(Vector v1, double m)
+        public static Vector operator /(Vector v1, float m)
         {
             return new Vector(v1.x / m, v1.y / m, v1.z / m, v1.w / m);
         }
@@ -159,5 +159,22 @@ namespace DIRT
         public static Vector up = new Vector(0, 1, 0);
         public static Vector down = new Vector(0, -1, 0);
         public static Vector zero = new Vector(0, 0, 0, 0);
+
+        public vec toVec()
+        {
+            vec o = new vec();
+            o.x = x;
+            o.y = y;
+            o.z = z;
+            return o;
+        }
+
+    }
+
+    public struct vec
+    {
+        public float x;
+        public float y;
+        public float z;
     }
 }
