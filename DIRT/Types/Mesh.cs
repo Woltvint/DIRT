@@ -45,6 +45,57 @@ namespace DIRT.Types
             tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2))));
         }
 
+        public void makeCubeTextured(float sizeX, float sizeY, float sizeZ,float texSX, float texSY, float texEX, float texEY)
+        {
+            //front
+            tris.Add(new Triangle(new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), -(sizeZ / 2))
+                , new Vector(texSX, texSY), new Vector(texSX, texEY), new Vector(texEX, texEY)
+            ));
+            tris.Add(new Triangle(new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texEY), new Vector(texEX, texSY)
+            ));
+
+            //back
+            tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), (sizeZ / 2))
+                , new Vector(texEX, texSY), new Vector(texEX, texEY), new Vector(texSX, texEY)
+            ));
+            tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), (sizeZ / 2))
+                , new Vector(texEX, texSY), new Vector(texSX, texEY), new Vector(texSX, texSY)
+            ));
+
+            //left
+            tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), (sizeZ / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texSY), new Vector(texEX, texEY)
+            ));
+            tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), (sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texEY), new Vector(texSX, texEY)
+            ));
+
+            //right
+            tris.Add(new Triangle(new Vector(-(sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), -(sizeZ / 2))
+                , new Vector(texSX, texEY), new Vector(texEX, texEY), new Vector(texEX, texSY)
+            ));
+            tris.Add(new Triangle(new Vector(-(sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2))
+                , new Vector(texSX, texEY), new Vector(texEX, texSY), new Vector(texSX, texSY)
+            ));
+
+            //top
+            tris.Add(new Triangle(new Vector(-(sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), (sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), (sizeZ / 2))
+                , new Vector(texSX, texSY), new Vector(texSX, texEY), new Vector(texEX, texEY)
+            ));
+            tris.Add(new Triangle(new Vector(-(sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), (sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), -(sizeZ / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texEY), new Vector(texEX, texSY)
+            ));
+
+            //bottom
+            tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2))
+                , new Vector(texEX, texEY), new Vector(texSX, texEY), new Vector(texSX, texSY)
+            ));
+            tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2))
+                , new Vector(texEX, texEY), new Vector(texSX, texSY), new Vector(texEX, texSY)
+            ));
+        }
+
         public void makePyramid(float size)
         {
             Vector A = new Vector(-(size / 2), -(size / 2), -(size / 2));
@@ -58,8 +109,13 @@ namespace DIRT.Types
             tris.Add(new Triangle(B, D, C));
         }
 
-        public void makeFromOBJ(string path)
+        public int makeFromOBJ(string path)
         {
+            if (!File.Exists(path))
+            {
+                return -1;
+            }
+
             string[] lines = File.ReadAllLines(path);
 
             for (int i = 0; i < lines.Length; i++)
@@ -80,16 +136,6 @@ namespace DIRT.Types
                     v.x = Convert.ToSingle(coords[1]);
                     v.y = Convert.ToSingle(coords[2]);
                     v.z = Convert.ToSingle(coords[3]);
-                    /*
-                    Random rnd = new Random();
-
-                    float d = (float)rnd.NextDouble()*2f;
-                    d -= 1f;
-                    d /= 50f;
-
-                    v.x += d;
-                    v.y += d;
-                    v.z += d;*/
 
                     ver.Add(v);
                 }
@@ -109,59 +155,7 @@ namespace DIRT.Types
 
             tris = tri;
 
-            
-        }
-
-        public List<Triangle> getTris()
-        {
-            object triLock = new object();
-
-            List<Triangle> trisToRet = new List<Triangle>();
-            /*
-            foreach (Triangle t in tris)
-            {
-                Triangle tr = new Triangle(Vector.zero,Vector.zero,Vector.zero);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    tr.points[i] = t.points[i] * Matrix4x4.rotationXMatrix(rotation.x);
-                    tr.points[i] = tr.points[i] * Matrix4x4.rotationYMatrix(rotation.y);
-                    tr.points[i] = tr.points[i] * Matrix4x4.rotationZMatrix(rotation.z);
-
-                    tr.points[i] += position;
-                }
-
-                trisToRet.Add(tr);
-            }*/
-
-            Parallel.ForEach(tris, (t) => {
-                Triangle tr = new Triangle(Vector.zero, Vector.zero, Vector.zero);
-
-                for (int i = 0; i < 3; i++)
-                {
-                    tr.points[i] = t.points[i] * Matrix4x4.rotationXMatrix(rotation.x);
-                    tr.points[i] = tr.points[i] * Matrix4x4.rotationYMatrix(rotation.y);
-                    tr.points[i] = tr.points[i] * Matrix4x4.rotationZMatrix(rotation.z);
-
-                    tr.points[i] += position;
-                }
-
-                lock (triLock)
-                {
-                    trisToRet.Add(tr);
-                }
-                
-            });
-
-            return trisToRet;
-        }
-
-        public void renderMesh()
-        {
-            Parallel.ForEach(tris, (t) =>
-            {
-                t.renderTriangle(position, rotation);
-            }); 
+            return tris.Count;
         }
     }
 }

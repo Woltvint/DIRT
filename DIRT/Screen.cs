@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using DIRT.Types;
 
 namespace DIRT
 {
-    static class Screen
+    internal static class Screen
     {
-        private static int[,] frame;
-        private static int[,] lastFrame;
+        private static int[,,] frame;
+        private static int[,,] lastFrame;
 
         public static readonly object nextFrameLock = new object();
-        public static float[,] nextFrame;
+        public static float[,,] nextFrame;
         public static bool frameReady = false;
 
-        public static int width = 100;
-        public static int height = 100;
+        public static int width = 99;
+        public static int height = 99;
 
         private static readonly object inputLock = new object();
-        private static char input = ' ';
+        private static ConsoleKey input;
 
         private static Stopwatch sw = new Stopwatch();
 
@@ -36,70 +36,68 @@ namespace DIRT
 
         public static string[] charPool = new string[] { " ", "░", "▒", "▓", "█" };
 
-        private static string[] colors = new string[256];
+        public static string[] colorsText = new string[256];
+
+        public static ConsoleGameEngine.ConsoleEngine Engine;
+
+        [DllImport("user32.dll")]
+        static extern int ShowCursor(bool bShow);
 
         public static void draw()
         {
-            int saveNum = 0;
-
             List<int> fpsCounter = new List<int>();
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 10; i++)
             {
-                fpsCounter.Add(30);
+                fpsCounter.Add(0);
             }
 
 
-            frame = new int[width, height];
+            frame = new int[width, height,3];
 
             lock (nextFrameLock)
             {
-                nextFrame = new float[width, height];
+                nextFrame = new float[width, height,3];
                 lastFrame = frame;
-                /*
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        nextFrame[x, y, 1] = 1000;
-                    }
-                }*/
             }
 
+
+
+            ShowCursor(false);
+
+
+
+            Engine = new ConsoleGameEngine.ConsoleEngine((int)Settings.screenWidth+1, (int)Settings.screenHeight+1,8, 8);
+            //Engine.Borderless();
             
 
-            
+            ConsoleGameEngine.Color[] colors = new ConsoleGameEngine.Color[16];
 
-            
-
+            for (int i = 0; i < 16; i++)
+            {
+                colors[i] = new ConsoleGameEngine.Color(i*16, i*16, i*16);
+            }
             for (int i = 0; i < 256; i++)
             {
-                colors[i] = $"\u001b[38;2;{i};{i};{i}m█";
-
-                //colors[i] = charPool[(int)MathF.Floor(i / ((int)MathF.Ceiling(256/charPool.Length)+1))];
-
-
-                //colors[i] = $"\u001b[38;5;{i}██";
-
-                //Console.Write($"\x1b]4;{i};rgb:{i}/{i}/{i}\x1b");
+                colorsText[i] = $"\u001b[38;2;{i};{i};{i}m█";
             }
 
+            Engine.SetPalette(colors);
 
+            Stopwatch frameClock = new Stopwatch();
 
             while (true)
             {
-                Settings.screenWidth = (Console.WindowWidth);
-                Settings.screenHeight = Console.WindowHeight-2;
-                Console.CursorVisible = false;
-                //Console.ForegroundColor = ConsoleColor.White;
 
-                
+                sw.Restart();
+                //frameClock.Restart();
+
                 lock (nextFrameLock)
                 {
                     if (frameReady)
                     {
                         lastFrame = frame;
-                        frame = new int[nextFrame.GetLength(0), nextFrame.GetLength(1)];
+                        frame = new int[nextFrame.GetLength(0), nextFrame.GetLength(1),3];
                         width = nextFrame.GetLength(0);
                         height = nextFrame.GetLength(1);
 
@@ -107,18 +105,39 @@ namespace DIRT
                         {
                             for (int x = 0; x < width; x++)
                             {
-                                if ((nextFrame[x, y]) >= 0)
-                                    frame[x, y] = (int)(nextFrame[x, y]);
+                                if ((nextFrame[x, y,0]) <= 0)
+                                    frame[x, y,0] = 0;
+                                else if ((nextFrame[x, y,0]) >= 255)
+                                    frame[x, y,0] = 255;
                                 else
-                                    frame[x, y] = 0;
+                                    frame[x, y,0] = (int)(nextFrame[x, y,0]);
+
+                                if ((nextFrame[x, y, 1]) <= 0)
+                                    frame[x, y, 1] = 0;
+                                else if ((nextFrame[x, y, 1]) >= 255)
+                                    frame[x, y, 1] = 255;
+                                else
+                                    frame[x, y, 1] = (int)(nextFrame[x, y, 1]);
+
+                                if ((nextFrame[x, y, 2]) <= 0)
+                                    frame[x, y, 2] = 0;
+                                else if ((nextFrame[x, y, 2]) >= 255)
+                                    frame[x, y, 2] = 255;
+                                else
+                                    frame[x, y, 2] = (int)(nextFrame[x, y, 2]);
+
 
                             }
                         }
                         frameReady = false;
                     }
+                    else
+                    {
+                        continue;
+                    }
                 }
 
-                sw.Restart();
+
                 
                 switch (Settings.frameUpdateMode)
                 {
@@ -133,32 +152,57 @@ namespace DIRT
                         break;
                 }
 
-                sw.Stop();
-
-                
                 /*
-                if (saveNum < 1256)
+                
+                for (int y = 0; y < height; y++)
                 {
-                    DirectoryInfo di;
-                    di = new DirectoryInfo("./save");
-                    if (!di.Exists) { di.Create(); }
+                    for (int x = 0; x < width; x++)
+                    {
+                        ConsoleGameEngine.ConsoleCharacter cc = ConsoleGameEngine.ConsoleCharacter.Full;
+                        
+                        if (frame[x, y,0]/4 >= 0 && frame[x, y,0]/4 < 16)
+                        {
+                            cc = ConsoleGameEngine.ConsoleCharacter.Light;
+                        }
 
-                    PrintScreen ps = new PrintScreen();
-                    ps.CaptureScreenToFile(di + "\\" + saveNum.ToString("D5") + ".png");
+                        if (frame[x, y,0]/4 >= 16 && frame[x, y,0]/4 < 32)
+                        {
+                            cc = ConsoleGameEngine.ConsoleCharacter.Medium;
+                        }
 
-                    saveNum++;
-                }
-                else
-                {
-                    break;
+                        if (frame[x, y,0]/4 >= 32 && frame[x, y,0]/4 < 48)
+                        {
+                            cc = ConsoleGameEngine.ConsoleCharacter.Dark;
+                        }
+
+                        if (frame[x, y,0]/4 >= 48 && frame[x, y,0]/4 < 64)
+                        {
+                            cc = ConsoleGameEngine.ConsoleCharacter.Full;
+                        }
+
+
+                        Engine.SetPixel(new ConsoleGameEngine.Point(x, y),frame[x,y,0]/16, cc);
+
+                        
+
+                    }
                 }*/
 
+                
 
+                //Engine.DisplayBuffer();
+                /*
+                frameClock.Stop();
+
+                if (frameClock.ElapsedMilliseconds < 14)
+                {
+                    Thread.Sleep((int)(15 - frameClock.ElapsedMilliseconds));
+                }*/
+
+                sw.Stop();
                 
                 if (sw.ElapsedMilliseconds > 0)
                 {
-                    Console.SetCursorPosition(0, height);
-
                     int fps = 0;
 
                     for (int i = 0; i < fpsCounter.Count; i++)
@@ -168,33 +212,34 @@ namespace DIRT
 
                     fps /= fpsCounter.Count;
 
-                    Console.WriteLine("\u001b[38;2;255;255;255m" + fps + "        ");
+                    Console.Title = "screen: " + fps + " fps | render: " + Renderer.fps + "fps | triangles: " + Renderer.lastTriCount;
+                    
 
                     fpsCounter.Insert(0, (int)(1000 / sw.ElapsedMilliseconds));
                     fpsCounter.RemoveAt(fpsCounter.Count-1);
-
-                    if (sw.ElapsedMilliseconds < 16)
-                    {
-                        Thread.Sleep((int)(16 - sw.ElapsedMilliseconds));
-                    }
                 }
+                
+                //lastColor = 0;
 
-                lastColor = 255;
+                
+                /*
 
                 lock (inputLock)
                 {
                     if (Console.KeyAvailable)
                     {
-                        input = Console.ReadKey().KeyChar;
+                        input = Console.ReadKey().Key;
                     }
                     else
                     {
-                        input = '|';
+                        input = ConsoleKey.NoName;
                     }
-                }
+                }*/
             }
 
         }
+
+
 
         private static void screenWriteAll()
         {
@@ -204,7 +249,7 @@ namespace DIRT
             {
                 for (int x = 0; x < width; x++)
                 {
-                    scChars.AddRange(getColor(frame[x, y]));
+                    scChars.AddRange(getColor(frame[x, y,0], frame[x, y, 1],frame[x, y, 2]));
                 }
 
                 scChars.Add('\n');
@@ -212,6 +257,7 @@ namespace DIRT
 
             Console.SetCursorPosition(0, 0);
             Console.Write(scChars.ToArray());
+
         }
 
         private static void screenWriteChanges()
@@ -223,26 +269,35 @@ namespace DIRT
             }
 
             List<char> scChars = new List<char>();
-            
+
+            scChars.AddRange($"\u001b[0;0H");
+
+            int lastY = 0;
+
             for (int y = 0; y < height; y++)
             {
                 int lastX = 0;
                 for (int x = 0; x < width; x++)
                 {
-                    if (colorChanged(frame[x,y],lastFrame[x,y]))
+                    if (colorChanged(x,y))
                     {
-                        if (lastX != x-1)
+                        if (lastX != x-1 || lastY != y)
                         {
                             scChars.AddRange($"\u001b[{y};{x}H");
                             lastX = x;
+                            lastY = y;
                         }
                         
-                        scChars.AddRange(getColor(frame[x, y]));
+                        scChars.AddRange(getColor(frame[x, y,0], frame[x, y, 1], frame[x, y, 2]));
                     }
                 }
             }
 
-            Console.Write(scChars.ToArray());
+            
+
+            //Console.Write(scChars.ToArray());
+
+            Console.Out.WriteAsync(scChars.ToArray());
         }
 
         private static bool bufferInicDone = false;
@@ -255,34 +310,37 @@ namespace DIRT
         }
 
 
-        private static char[] getColor(int pixel)
+        private static char[] getColor(int R, int G, int B)
         {
             switch (Settings.colorMode)
             {
                 case Settings.colorModes.charPoolBrightness:
-                    return getCharPoolBrightness(pixel);
+                    //return getCharPoolBrightness(pixel);
                 case Settings.colorModes.consoleColor:
                     break;
                 case Settings.colorModes.virtualTerminalColor:
-                    return getVirtualTerminalColor(pixel);
+                    return getVirtualTerminalColor(R,G,B);
             }
 
             return " ".ToCharArray();
         }
 
-        private static bool colorChanged(float first, float second)
+        private static bool colorChanged(int x,int y)
         {
-            switch (Settings.colorMode)
+            if (frame[x, y, 0] != lastFrame[x, y, 0])
             {
-                case Settings.colorModes.charPoolBrightness:
-                    return (int)Remap(first, 0, 255, 0, charPool.Length - 1) != (int)Remap(second, 0, 255, 0, charPool.Length - 1);
-                case Settings.colorModes.consoleColor:
-                    break;
-                case Settings.colorModes.virtualTerminalColor:
-                    return first != second;
+                return true;
+            }
+            if (frame[x, y, 1] != lastFrame[x, y, 1])
+            {
+                return true;
+            }
+            if (frame[x, y, 2] != lastFrame[x, y, 2])
+            {
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         
@@ -294,18 +352,24 @@ namespace DIRT
 
 
 
-        private static int lastColor = 0;
-        private static char[] getVirtualTerminalColor(int pixel)
+        private static int lastR = 0;
+        private static int lastG = 0;
+        private static int lastB = 0;
+
+        private static char[] getVirtualTerminalColor(int R,int G,int B)
         {
-            //return $"\u001b[38;2;{pixel};{pixel};{pixel}m██";
-            if (lastColor == pixel)
+            //return $"\u001b[38;2;{pixel};{pixel};{pixel}m█".ToCharArray();
+            if (lastR == R && lastG == G && lastB == B)
             {
                 return "█".ToCharArray();
             }
             else
             {
-                lastColor = pixel;
-                return colors[pixel].ToCharArray();
+                lastR = R;
+                lastG = G;
+                lastB = B;
+                //return colorsText[pixel].ToCharArray();
+                return $"\u001b[38;2;{R};{G};{B}m█".ToCharArray();
             }
 
         }
@@ -433,7 +497,7 @@ namespace DIRT
         }
 
 
-        public static char getInput()
+        public static ConsoleKey getInput()
         {
             lock (inputLock)
             {

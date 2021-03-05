@@ -11,37 +11,7 @@ namespace DIRT.Types
             m = mat;
         }
 
-
-        public static Matrix4x4 projectionMatrix()
-        {
-            float far = Settings.zFar;
-            float near = Settings.zNear;
-            float a = Settings.aspectRatio;
-            float f = 1 / MathF.Tan(Settings.fov / 2);
-            float q = far / (far - near);
-
-            Matrix4x4 m = new Matrix4x4(new float[4, 4]);
-
-            m.m[0, 0] = a * f;
-            m.m[1, 1] = f;
-            m.m[2, 2] = q;
-            m.m[2, 3] = -near * q;
-            m.m[3, 2] = 1;
-
-            return m;
-            /*
-            return new Matrix4x4(new float[,]
-                {
-                    {a * (1/MathF.Tan(fov/2)),0,0,0 },
-                    {0 ,1/MathF.Tan(fov/2),0,0 },
-                    {0 ,0 ,far / (far - near),1 },
-                    {0 ,0 ,(-far*near) / (far - near),0 },
-                });*/
-
-
-        }
-
-        public static Matrix4x4 rotationXMatrix(float rot)
+        internal static Matrix4x4 rotationXMatrix(float rot)
         {
             Matrix4x4 rotMat = new Matrix4x4(new float[4, 4]);
             rotMat.m[0, 0] = 1;
@@ -54,7 +24,7 @@ namespace DIRT.Types
             return rotMat;
         }
 
-        public static Matrix4x4 rotationYMatrix(float rot)
+        internal static Matrix4x4 rotationYMatrix(float rot)
         {
             Matrix4x4 rotMat = new Matrix4x4(new float[4, 4]);
             rotMat.m[0, 0] = MathF.Cos(rot);
@@ -67,7 +37,7 @@ namespace DIRT.Types
             return rotMat;
         }
 
-        public static Matrix4x4 rotationZMatrix(float rot)
+        internal static Matrix4x4 rotationZMatrix(float rot)
         {
             Matrix4x4 rotMat = new Matrix4x4(new float[4, 4]);
             rotMat.m[0, 0] = MathF.Cos(rot);

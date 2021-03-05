@@ -1,29 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 namespace DIRT
 {
-    public class PrintScreen
+    internal class PrintScreen
     {
-        /// <summary>
-        /// Creates an Image object containing a screen shot of the entire desktop
-        /// </summary>
-        /// <returns></returns>
         public Image CaptureScreen()
         {
             return CaptureWindow(User32.GetDesktopWindow());
         }
 
-        /// <summary>
-        /// Creates an Image object containing a screen shot of a specific window
-        /// </summary>
-        /// <param name="handle">The handle to the window. (In windows forms, this is obtained by the Handle property)</param>
-        /// <returns></returns>
         public Image CaptureWindow(IntPtr handle)
         {
             // get te hDC of the target window
@@ -56,32 +44,18 @@ namespace DIRT
             return img;
         }
 
-        /// <summary>
-        /// Captures a screen shot of a specific window, and saves it to a file
-        /// </summary>
-        /// <param name="handle"></param>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
         public void CaptureWindowToFile(IntPtr handle, string filename, ImageFormat format)
         {
             Image img = CaptureWindow(handle);
             img.Save(filename, format);
         }
 
-        /// <summary>
-        /// Captures a screen shot of the entire desktop, and saves it to a file
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
         public void CaptureScreenToFile(string filename)
         {
             Image img = CaptureScreen();
             img.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
         }
 
-        /// <summary>
-        /// Helper class containing Gdi32 API functions
-        /// </summary>
         private class GDI32
         {
 
@@ -104,9 +78,6 @@ namespace DIRT
             public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
         }
 
-        /// <summary>
-        /// Helper class containing User32 API functions
-        /// </summary>
         private class User32
         {
             [StructLayout(LayoutKind.Sequential)]

@@ -30,13 +30,6 @@ namespace DIRT
                 height = MathF.Round(value);
             }
         }
-        public static float aspectRatio
-        {
-            get
-            {
-                return screenWidth / screenHeight;;
-            }
-        }
 
         public enum renderModes
         {
@@ -67,15 +60,9 @@ namespace DIRT
 
         public static colorModes colorMode = colorModes.virtualTerminalColor;
 
-        public static float zFar = 1000;
-        public static float zNear = 0.1f;
-
-        public static float fov = MathF.PI/2;
 
         public static Vector camera = new Vector(0,0,-1);
         public static Vector cameraRot = new Vector(0, 0, 0);
         public static Vector light = new Vector(1,1,1);
-
-        public static Vector globalRot = new Vector(0, 0, 0, 0);
     }
 }
