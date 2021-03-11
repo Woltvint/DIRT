@@ -18,7 +18,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="kernel.c">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -29,7 +29,8 @@
 
   <ItemGroup>
     <Reference Include="ConsoleGameEngine">
-      <HintPath>C:\Users\woltv\Desktop\ConsoleGameEngine.dll</HintPath>
+      <HintPath>ConsoleGameEngine.dll</HintPath>
+      <Private>true</Private>
     </Reference>
   </ItemGroup>
 
