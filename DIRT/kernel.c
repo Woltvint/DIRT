@@ -358,34 +358,6 @@ struct mat4x4 matInvert(struct mat4x4 m)
     return matrix;
 }
 
-void swap(float3* xp, float3* yp)
-{
-    float3 temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
-
-// Function to perform Selection Sort 
-void selectionSort(struct tri arr[], int n, float3 cam)
-{
-    int i, j, min_idx;
-
-    // One by one move boundary of unsorted subarray 
-    for (i = 0; i < n - 1; i++) {
-
-        // Find the minimum element in unsorted array 
-        min_idx = i;
-        for (j = i + 1; j < n; j++)
-            if (fast_distance(triangleCenter(arr[j]), cam) < fast_distance(triangleCenter(arr[min_idx]), cam))
-                min_idx = j;
-
-        // Swap the found minimum element 
-        // with the first element 
-        swap(&arr[min_idx], &arr[i]);
-    }
-}
-
-
 
 __kernel void prepTris(global struct tri* tris, global int* trisCount, global struct vec* rots, global struct vec* poss, global struct vec* camera)
 {
@@ -440,7 +412,7 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
             tris[i].visible = 0;
         else
             tris[i].visible = 1;
-        
+
 
         tris[i].p1.x = points[0].x;
         tris[i].p1.y = points[0].y;
@@ -453,9 +425,7 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
         tris[i].p3.x = points[2].x;
         tris[i].p3.y = points[2].y;
         tris[i].p3.z = points[2].z;
-}
-
-
+} 
 
 __kernel void ray(global struct tri* tris, global struct vec* lights, global int* _trisCount, global struct vec* _origin, global struct vec* _dir, global float* texture, global float* _output) {
 
@@ -466,10 +436,10 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
     float3 dir = (float3)(_dir[index+1].x, _dir[index+1].y, _dir[index+1].z);
 
     float3 rot = (float3)(_dir[0].x, _dir[0].y, _dir[0].z);
-    /*
+    
     dir = vec3MatMult(dir, rotMatX(rot.x));
     dir = vec3MatMult(dir, rotMatY(rot.y));
-    dir = vec3MatMult(dir, rotMatZ(rot.z));*/
+    //dir = vec3MatMult(dir, rotMatZ(rot.z));
 
 
     int trisCount = _trisCount[0];
@@ -480,8 +450,6 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
     float dist = 100;
     int distIndex = -1;
     bool cast = false;
-    
-
 
     for (int i = 0; i < trisCount; i++)
     {
@@ -493,9 +461,6 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
         float3 A = (float3)(tris[i].p1.x, tris[i].p1.y, tris[i].p1.z);
         float3 B = (float3)(tris[i].p2.x, tris[i].p2.y, tris[i].p2.z);
         float3 C = (float3)(tris[i].p3.x, tris[i].p3.y, tris[i].p3.z);
-
-        
-        
 
         if (intersects(A, B, C, origin, dir))
         {
@@ -586,7 +551,7 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
 
             if (intersectsShadow(sA, sB, sC, P, light))
             {
-                //change = -64;
+                change += -16;
                 break;
             }
 
@@ -694,446 +659,3 @@ __kernel void rayLight(global struct tri* tris, global struct vec* lights, globa
     
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-float4 projectPoint(float4 p,int w,int h)
-{
-    float4 output = (float4)(p.x,p.y,p.z,1);
-
-    output = vec4MatMult(output, projMat());
-    
-
-    output /= (output.w);
-    
-
-
-    output.x *= 0.5f * w;
-    output.y *= 0.5f * h;
-
-    return (float4)(output.x, output.y, output.z,output.w);
-}
-
-/*struct tri projectTris(struct tri triangle,float3 rot, float3 pos, float3 globalRot,int w,int h)
-{
-    struct tri t;
-    
-    float3 A = (float3)(triangle.p1.x, triangle.p1.y, triangle.p1.z);
-    float3 B = (float3)(triangle.p2.x, triangle.p2.y, triangle.p2.z);
-    float3 C = (float3)(triangle.p3.x, triangle.p3.y, triangle.p3.z);
-
-    A = projectPoint(A, rot, pos, globalRot, w, h);
-    B = projectPoint(B, rot, pos, globalRot, w, h);
-    C = projectPoint(C, rot, pos, globalRot, w, h);
-
-    t.p1.x = A.x;
-    t.p1.y = A.y;
-    t.p1.z = A.z;
-
-    t.p2.x = B.x;
-    t.p2.y = B.y;
-    t.p2.z = B.z;
-
-    t.p3.x = C.x;
-    t.p3.y = C.y;
-    t.p3.z = C.z;
-
-    return t;
-}*/
-
-
-
-__kernel void mathway(global struct tri* tris, global int* trisCount, global struct vec* camera, global float* _output)
-{
-    int count = trisCount[0];
-    int width = trisCount[1];
-    int height = trisCount[2];
-    
-    int i = get_global_id(0);
-
-    if (tris[i].visible == 0)
-    {
-        return;
-    }
-
-    float3 oA = (float3)(tris[i].p1.x, tris[i].p1.y, tris[i].p1.z);
-    float3 oB = (float3)(tris[i].p2.x, tris[i].p2.y, tris[i].p2.z);
-    float3 oC = (float3)(tris[i].p3.x, tris[i].p3.y, tris[i].p3.z);
-
-    float3 camPos = (float3)(camera[0].x, camera[0].y, camera[0].z);
-    float3 camLook = (float3)(camera[1].x, camera[1].y, camera[1].z);
-    float3 camUp = (float3)(camera[2].x, camera[2].y, camera[2].z);
-
-    float3 n = normal(oA, oB, oC);
-    
-    if (angleDist(n, oA - camPos) > 0)
-    {
-        return;
-    }
-
-    struct mat4x4 view = matInvert(pointAt(camPos, camLook, camUp));
-
-    float4 A = (float4)(tris[i].p1.x, tris[i].p1.y, tris[i].p1.z, 1);
-    float4 B = (float4)(tris[i].p2.x, tris[i].p2.y, tris[i].p2.z, 1);
-    float4 C = (float4)(tris[i].p3.x, tris[i].p3.y, tris[i].p3.z, 1);
-
-    A = vec4MatMult(A, view);
-    B = vec4MatMult(B, view);
-    C = vec4MatMult(C, view);
-
-    A = projectPoint(A, width, height);
-    B = projectPoint(B, width, height);
-    C = projectPoint(C, width, height);
-    
-    
-    if (C.y > B.y)
-        swap(&C, &B);
-    if (C.y > A.y)
-        swap(&C, &A);
-    if (B.y > A.y)
-        swap(&B, &A);
-
-    int brightness = ((angleDist((float3)(1,-1,-1), n)) * 256);
-
-
-    int hw = (width / 2);
-    int hh = (height / 2);
-    /*
-    int y1 = (int)C.y;
-    int y2 = (int)B.y;
-    int y3 = (int)A.y;
-
-    int x1 = (int)C.x;
-    int x2 = (int)B.x;
-    int x3 = (int)A.x;*/
-
-    
-    int x1 = (int)A.x;
-    int y1 = (int)A.y;
-    float u1 = 0;
-    float v1 = 0;
-    float w1 = A.w;
-
-    int x2 = (int)B.x;
-    int y2 = (int)B.y;
-    float u2 = 0;
-    float v2 = 0;
-    float w2 = B.w;
-
-    int x3 = (int)C.x;
-    int y3 = (int)C.y;
-    float u3 = 0;
-    float v3 = 0;
-    float w3 = C.w;
-
-    if (y2 < y1)
-    {
-        swap(&y1, &y2);
-        swap(&x1, &x2);
-        swap(&u1, &u2);
-        swap(&v1, &v2);
-        swap(&w1, &w2);
-    }
-
-    if (y3 < y1)
-    {
-        swap(&y1, &y3);
-        swap(&x1, &x3);
-        swap(&u1, &u3);
-        swap(&v1, &v3);
-        swap(&w1, &w3);
-    }
-
-    if (y3 < y2)
-    {
-        swap(&y2, &y3);
-        swap(&x2, &x3);
-        swap(&u2, &u3);
-        swap(&v2, &v3);
-        swap(&w2, &w3);
-    }
-    
-    int dy1 = y2 - y1;
-    int dx1 = x2 - x1;
-    float dv1 = v2 - v1;
-    float du1 = u2 - u1;
-    float dw1 = w2 - w1;
-
-    int dy2 = y3 - y1;
-    int dx2 = x3 - x1;
-    float dv2 = v3 - v1;
-    float du2 = u3 - u1;
-    float dw2 = w3 - w1;
-
-    float tex_u, tex_v, tex_w;
-
-    float dax_step = 0, dbx_step = 0,
-        du1_step = 0, dv1_step = 0,
-        du2_step = 0, dv2_step = 0,
-        dw1_step = 0, dw2_step = 0;
-
-    if (dy1) dax_step = dx1 / (float)abs(dy1);
-    if (dy2) dbx_step = dx2 / (float)abs(dy2);
-
-    if (dy1) du1_step = du1 / (float)abs(dy1);
-    if (dy1) dv1_step = dv1 / (float)abs(dy1);
-    if (dy1) dw1_step = dw1 / (float)abs(dy1);
-
-    if (dy2) du2_step = du2 / (float)abs(dy2);
-    if (dy2) dv2_step = dv2 / (float)abs(dy2);
-    if (dy2) dw2_step = dw2 / (float)abs(dy2);
-
-    if (dy1)
-    {
-        for (int i = y1; i <= y2; i++)
-        {
-            int ax = x1 + (float)(i - y1) * dax_step;
-            int bx = x1 + (float)(i - y1) * dbx_step;
-
-            float tex_su = u1 + (float)(i - y1) * du1_step;
-            float tex_sv = v1 + (float)(i - y1) * dv1_step;
-            float tex_sw = w1 + (float)(i - y1) * dw1_step;
-
-            float tex_eu = u1 + (float)(i - y1) * du2_step;
-            float tex_ev = v1 + (float)(i - y1) * dv2_step;
-            float tex_ew = w1 + (float)(i - y1) * dw2_step;
-
-            if (ax > bx)
-            {
-                swap(&ax, &bx);
-                swap(&tex_su, &tex_eu);
-                swap(&tex_sv, &tex_ev);
-                swap(&tex_sw, &tex_ew);
-            }
-
-            tex_u = tex_su;
-            tex_v = tex_sv;
-            tex_w = tex_sw;
-
-            float tstep = 1.0f / ((float)(bx - ax));
-            float t = 0.0f;
-
-            for (int j = ax; j < bx; j++)
-            {
-                tex_u = (1.0f - t) * tex_su + t * tex_eu;
-                tex_v = (1.0f - t) * tex_sv + t * tex_ev;
-                tex_w = (1.0f - t) * tex_sw + t * tex_ew;
-                /*if (tex_w > pDepthBuffer[i * ScreenWidth() + j])
-                {
-                    Draw(j, i, tex->SampleGlyph(tex_u / tex_w, tex_v / tex_w), tex->SampleColour(tex_u / tex_w, tex_v / tex_w));
-                    pDepthBuffer[i * ScreenWidth() + j] = tex_w;
-                }*/
-                if (j + hw >= 0 && j + hw < width && i + hh >= 0 && i + hh < height && tex_w < 2)
-                    _output[(j+hw) + ((i+hh) * width)] = brightness;
-                t += tstep;
-            }
-
-        }
-    }
-
-    dy1 = y3 - y2;
-    dx1 = x3 - x2;
-    dv1 = v3 - v2;
-    du1 = u3 - u2;
-    dw1 = w3 - w2;
-
-    if (dy1) dax_step = dx1 / (float)abs(dy1);
-    if (dy2) dbx_step = dx2 / (float)abs(dy2);
-
-    du1_step = 0, dv1_step = 0;
-    if (dy1) du1_step = du1 / (float)abs(dy1);
-    if (dy1) dv1_step = dv1 / (float)abs(dy1);
-    if (dy1) dw1_step = dw1 / (float)abs(dy1);
-
-    if (dy1)
-    {
-        for (int i = y2; i <= y3; i++)
-        {
-            int ax = x2 + (float)(i - y2) * dax_step;
-            int bx = x1 + (float)(i - y1) * dbx_step;
-
-            float tex_su = u2 + (float)(i - y2) * du1_step;
-            float tex_sv = v2 + (float)(i - y2) * dv1_step;
-            float tex_sw = w2 + (float)(i - y2) * dw1_step;
-
-            float tex_eu = u1 + (float)(i - y1) * du2_step;
-            float tex_ev = v1 + (float)(i - y1) * dv2_step;
-            float tex_ew = w1 + (float)(i - y1) * dw2_step;
-
-            if (ax > bx)
-            {
-                swap(&ax, &bx);
-                swap(&tex_su, &tex_eu);
-                swap(&tex_sv, &tex_ev);
-                swap(&tex_sw, &tex_ew);
-            }
-
-            tex_u = tex_su;
-            tex_v = tex_sv;
-            tex_w = tex_sw;
-
-            float tstep = 1.0f / ((float)(bx - ax));
-            float t = 0.0f;
-
-            for (int j = ax; j < bx; j++)
-            {
-                tex_u = (1.0f - t) * tex_su + t * tex_eu;
-                tex_v = (1.0f - t) * tex_sv + t * tex_ev;
-                tex_w = (1.0f - t) * tex_sw + t * tex_ew;
-
-                /*if (tex_w > pDepthBuffer[i * ScreenWidth() + j])
-                {
-                    Draw(j, i, tex->SampleGlyph(tex_u / tex_w, tex_v / tex_w), tex->SampleColour(tex_u / tex_w, tex_v / tex_w));
-                    pDepthBuffer[i * ScreenWidth() + j] = tex_w;
-                }*/
-                if (j+hw >= 0 && j+hw < width && i+hh >= 0 && i+hh < height && tex_w < 2)
-                    _output[(j + hw) + ((i + hh) * width)] = brightness;
-                t += tstep;
-            }
-        }
-    }
-
-
-    /*
-    float mid = 1/(y3+y1);
-
-    int y2y1 = y2 - y1;
-
-    for (int i = 0; i <= y2y1; i++)
-    {
-        float xStep1 = x2 - x1;
-        xStep1 /= y2y1;
-
-        float xStep2 = x3 - x1;
-        xStep2 /= (y3 - y1);
-        
-        if (xStep1 > xStep2)
-        {
-            swap(&xStep1, &xStep2);
-        }
-
-        for (int u = (int)(xStep1*i); u <= (int)(xStep2 * i); u++)
-        {
-            int X = x1 + hw + u;
-            int Y = y1 + i + hh;
-
-            _output[X + (Y * width)] = brightness;
-        }
-
-    }
-
-    int y3y2 = y3 - y2;
-
-    for (int i = 0; i <= y3y2; i++)
-    {
-        float xStep1 = x3 - x2;
-        xStep1 /= y3y2;
-
-        float xStep2 = x3 - x1;
-        xStep2 /= (y3 - y1);
-
-        if (xStep1 > xStep2)
-        {
-            swap(&xStep1, &xStep2);
-        }
-
-        for (int u = (int)(xStep1 * i); u <= (int)(xStep2 * i); u++)
-        {
-            int X = x3 + hw - u;
-            int Y = y3 - i + hh;
-
-            _output[X + (Y * width)] = brightness;
-        }
-    }
-
-
-
-    _output[(x1 + hw) + ((y1 + hh) * width)] = 128;
-    _output[(x2 + hw) + ((y2 + hh) * width)] = 128;
-    _output[(x3 + hw) + ((y3 + hh) * width)] = 128;
-    */
-    /*if (y2 != y3)
-    {
-
-    }*/
-
-    /*
-    A.z = oA.z;
-    B.z = oB.z;
-    C.z = oC.z;*/
-    /*
-    int res = 200;
-
-    float4 AB = (B - A)/res;
-    float4 AC = (C - A)/res;
-    float4 BC = (C - B)/res;
-
-
-
-    for (int i = 0; i < res; i++)
-    {
-        float4 AP = A + (AB * i);
-        float4 BP = A + (AC * i);
-        float4 CP = B + (BC * i);
-
-        int APX = hw + (int)AP.x;
-        int APY = hh + (int)AP.y;
-        int APZ = (int)AP.z;
-
-        int BPX = hw + (int)BP.x;
-        int BPY = hh + (int)BP.y;
-        int BPZ = (int)BP.z;
-
-        int CPX = hw + (int)CP.x;
-        int CPY = hh + (int)CP.y;
-        int CPZ = (int)CP.z;
-
-        if (APX >= 0 && APX < width && APY >= 0 && APY < height)
-        {
-            if (APZ < 1)
-            _output[APX + (APY * width)] = 255;
-        }
-
-        if (BPX >= 0 && BPX < width && BPY >= 0 && BPY < height)
-        {
-            if (APZ < 1)
-            _output[BPX + (BPY * width)] = 255;
-        }
-
-        if (CPX >= 0 && CPX < width && CPY >= 0 && CPY < height)
-        {
-            if (APZ < 1)
-            _output[CPX + (CPY * width)] = 255;
-        }
-
-
-    }*/
-
-    
-
-    
-    /*for (int x = 0; x < width; x++)
-    {
-        for (int y = 0; y < height; y++)
-        {
-            if (x == y)
-            _output[x + (y * width)] = 255;
-
-            
-        }
-    }*/
-}

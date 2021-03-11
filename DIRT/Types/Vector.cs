@@ -166,8 +166,6 @@ namespace DIRT.Types
             o.y = y;
             o.z = z;
 
-            
-
             return o;
         }
 

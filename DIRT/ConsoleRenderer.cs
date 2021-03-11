@@ -10,7 +10,6 @@ namespace DIRT
     public static class ConsoleRenderer
     {
         private static List<Mesh> meshes;
-
         public static List<Mesh> Meshes
         {
             get
@@ -28,7 +27,6 @@ namespace DIRT
         }
 
         private static List<Vector> lights;
-
         public static List<Vector> Lights
         {
             get
@@ -101,18 +99,12 @@ namespace DIRT
 
         public static bool keyDown(ConsoleKey key)
         {
-            if (Screen.Engine != null)
-                return Screen.Engine.GetKeyDown(key);
-            else
-                return Screen.getInput() == key;
+            return Screen.Engine.GetKeyDown(key);
         }
 
         public static bool keyPressed(ConsoleKey key)
         {
-            if (Screen.Engine != null)
-                return Screen.Engine.GetKey(key);
-            else
-                return Screen.getInput() == key;
+            return Screen.Engine.GetKey(key);
         }
 
     }

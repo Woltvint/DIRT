@@ -62,7 +62,5 @@ namespace DIRT.Types
             }
             return matrix;
         }
-
-        
     }
 }

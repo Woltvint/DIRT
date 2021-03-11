@@ -9,6 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ConsoleGameEngine.dll" />
+    <None Remove="kernel.c" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ConsoleGameEngine.dll">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="kernel.c">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Cloo.clSharp" Version="1.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
   </ItemGroup>
@@ -17,12 +31,6 @@
     <Reference Include="ConsoleGameEngine">
       <HintPath>C:\Users\woltv\Desktop\ConsoleGameEngine.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="kernel.c">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

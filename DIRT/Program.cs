@@ -47,16 +47,13 @@ namespace DIRT
             //ground.makeFromOBJ("destroyer.obj");
             //ground.makeCube(3, 3, 3);
             //ground.makeCubeTextured(4, 4, 4, 48.1f, 16.1f, 111.9f, 79.9f);
-            ground.makeCubeTextured(4, 4, 4, 16.1f, 0.1f, 31.9f, 15.9f);
+            ground.makeCubeTextured(4, 4, 4, 64.1f, 0.1f, 79.9f, 15.9f);
 
             //ground.makeCubeTextured(4, 4, 4, 0.1f, 80.1f, 127.9f, 207.9f);
+            //ground.makeCubeTextured(4, 4, 4, 128.1f, 80.1f, 255.9f, 207.9f);
             /*Triangle t = new Triangle(new Vector(0, 0, 0), new Vector(4, 4, 0), new Vector(4, 0, 0), new Vector(0, 0), new Vector(16, 16), new Vector(16, 0));
 
-            
-
             ground.tris.Add(t);*/
-
-
             ConsoleRenderer.Meshes.Add(ground);
 
             Vector light = new Vector(-1f, -1, -1f);
@@ -64,6 +61,60 @@ namespace DIRT
             ConsoleRenderer.Lights.Add(light);
 
             float rot = -MathF.PI;
+
+
+
+            /*
+            List<Mesh> logo = new List<Mesh>();
+
+            //D
+            logo.Add(new Mesh(new Vector(0, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(0, 1, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(0, 2, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(0, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(1, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(1, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(2, 1, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(2, 2, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            //I
+            logo.Add(new Mesh(new Vector(4, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(4, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(5, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(5, 1, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(5, 2, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(5, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(6, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(6, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            //R
+            logo.Add(new Mesh(new Vector(8, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(8, 1, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(8, 2, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(8, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(9, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(9, 2, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(10, 1, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(10, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            //T
+            logo.Add(new Mesh(new Vector(12, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(13, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(13, 1, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(13, 2, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(13, 3, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+            logo.Add(new Mesh(new Vector(14, 0, 10), Vector.zero).makeCubeTextured(1, 1, 1, 16.1f, 0.1f, 31.9f, 15.9f));
+
+            Mesh rysboi = new Mesh(new Vector(0, -4, 10), Vector.zero);
+            rysboi.makeCubeTextured(4, 4, 4, 0.1f, 80.1f, 127.9f, 207.9f);
+
+            Mesh veda = new Mesh(new Vector(14, -4, 10), Vector.zero);
+            veda.makeCubeTextured(4, 4, 4, 128.1f, 80.1f, 255.9f, 207.9f);
+
+            ConsoleRenderer.Meshes.Add(rysboi);
+            ConsoleRenderer.Meshes.Add(veda);
+            ConsoleRenderer.Meshes.AddRange(logo);
+
+            */
+
+
 
             Rectangle sc = new Rectangle();
             GetWindowRect(GetConsoleWindow(), ref sc);
@@ -73,7 +124,7 @@ namespace DIRT
 
             ConsoleRenderer.textureMap = (Bitmap)Image.FromFile("textureMap.png");
 
-            bool capture = false;
+            bool capture = true;
             //ground.rotation.z = 10;
             while (true)
             {
@@ -82,9 +133,14 @@ namespace DIRT
 
                 lock (ConsoleRenderer.renderLock)
                 {
-                    ground.rotation.x += 0.005f;
-                    ground.rotation.y += 0.002f;
-                    ground.rotation.z += 0.007f;
+                    /*veda.rotation.x += 0.005f;
+                    veda.rotation.y += 0.002f;
+                    veda.rotation.z += 0.007f;
+
+                    rysboi.rotation.x += 0.005f;
+                    rysboi.rotation.y += 0.002f;
+                    rysboi.rotation.z += 0.007f;*/
+
                     //DIRT.Lights[0] = new Vector(MathF.Cos(rot), -0.25f, MathF.Sin(rot));
 
                     if (capture)
@@ -121,6 +177,16 @@ namespace DIRT
                     if (ConsoleRenderer.keyPressed(ConsoleKey.Q))
                     {
                         Settings.camera += new Vector(0, 0.1f, 0);
+                    }
+
+
+                    if (ConsoleRenderer.keyPressed(ConsoleKey.NumPad1))
+                    {
+                        Settings.screenMode = Settings.screenModes.trueColor;
+                    }
+                    if (ConsoleRenderer.keyPressed(ConsoleKey.NumPad2))
+                    {
+                        Settings.screenMode = Settings.screenModes.graySpeed;
                     }
 
                 }

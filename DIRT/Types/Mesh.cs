@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace DIRT.Types
 {
@@ -45,7 +44,7 @@ namespace DIRT.Types
             tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2))));
         }
 
-        public void makeCubeTextured(float sizeX, float sizeY, float sizeZ,float texSX, float texSY, float texEX, float texEY)
+        public Mesh makeCubeTextured(float sizeX, float sizeY, float sizeZ,float texSX, float texSY, float texEX, float texEY)
         {
             //front
             tris.Add(new Triangle(new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector(-(sizeX / 2), (sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), (sizeY / 2), -(sizeZ / 2))
@@ -94,6 +93,8 @@ namespace DIRT.Types
             tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2))
                 , new Vector(texEX, texEY), new Vector(texSX, texSY), new Vector(texEX, texSY)
             ));
+
+            return this;
         }
 
         public void makePyramid(float size)

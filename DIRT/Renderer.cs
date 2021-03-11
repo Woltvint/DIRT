@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Cloo;
 using DIRT.Types;
+using System.Reflection;
 
 namespace DIRT
 {
@@ -22,10 +23,7 @@ namespace DIRT
         private static ComputeContext context;
 
         private static ComputeKernel prepTrisKernel;
-
-        private static ComputeKernel kernel;
-        private static ComputeKernel kernelLight;
-        private static ComputeKernel kernelMath;
+        private static ComputeKernel renderKernel;
 
         private static ComputeEventList eventList;
         private static ComputeCommandQueue commands;
@@ -42,7 +40,7 @@ namespace DIRT
         private static ComputeBuffer<float> outs;
         private static ComputeBuffer<vec> lig;
         #endregion
-        #region renderModes variables
+        #region variables
         public static Bitmap textureMap
         {
             set
@@ -56,7 +54,6 @@ namespace DIRT
                         texture[((x + (y * 1000)) * 3) + 2] = value.GetPixel(x, y).B;
                     }
                 }
-
             }
         }
 
@@ -75,14 +72,22 @@ namespace DIRT
         {
             context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[0]), null, IntPtr.Zero);
 
-            string ker = File.ReadAllText("kernel.c");
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "DIRT.kernel.c";
+
+            string ker = "";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                ker = reader.ReadToEnd();
+            }
+
             var program = new ComputeProgram(context, ker);
             program.Build(null, null, null, IntPtr.Zero);
 
             prepTrisKernel = program.CreateKernel("prepTris");
-            kernel = program.CreateKernel("ray");
-            kernelLight = program.CreateKernel("rayLight");
-            kernelMath = program.CreateKernel("mathway");
+            renderKernel = program.CreateKernel("ray");
 
             eventList = new ComputeEventList();
             commands = new ComputeCommandQueue(context, context.Devices[0], ComputeCommandQueueFlags.None);
@@ -110,7 +115,6 @@ namespace DIRT
                     switch (Settings.renderMode)
                     {
                         case Settings.renderModes.mathWay:
-                            mathWay();
                             break;
                         case Settings.renderModes.raycast:
                             raycast();
@@ -135,17 +139,17 @@ namespace DIRT
                         Screen.frameReady = true;
                     }
 
-                    lastTriCount = (int)gTris.Count;
+                    if (gTris != null)
+                    {
+                        lastTriCount = (int)gTris.Count;
+                    }
 
                     eventList.Clear();
                 }
-
-                
-                
             }
         }
 
-        private static void prepTris()
+        private static bool prepTris()
         {
             int width = frame.GetLength(0);
             int height = frame.GetLength(1);
@@ -164,8 +168,6 @@ namespace DIRT
             Vector up = new Vector(0, 1, 0, 0);
             look *= Matrix4x4.rotationXMatrix(Settings.cameraRot.x);
             look *= Matrix4x4.rotationYMatrix(Settings.cameraRot.y);
-            /*up *= Matrix4x4.rotationXMatrix(Settings.cameraRot.x);
-            up *= Matrix4x4.rotationYMatrix(Settings.cameraRot.y);*/
             cam[1] = look.toVec();
             cam[2] = up.toVec();
 
@@ -184,12 +186,10 @@ namespace DIRT
             options[1] = width;
             options[2] = height;
 
-            
-            
-            
-
-            
-
+            if (tris.Count <= 0)
+            {
+                return false;
+            }
 
             if (lastTriCount != tris.Count)
             {
@@ -219,51 +219,19 @@ namespace DIRT
             prepTrisKernel.SetMemoryArgument(4, gCam);
             
             commands.Execute(prepTrisKernel, null, new long[] { tris.Count }, null, eventList);
-            
-        }
-
-        private static void mathWay()
-        {
-            prepTris();
 
 
-            int width = frame.GetLength(0);
-            int height = frame.GetLength(1);
-
-
-            float[] screen = new float[width * height*5];
-
-            outs = new ComputeBuffer<float>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer,screen);
-
-            kernelMath.SetMemoryArgument(0, gTris);
-            kernelMath.SetMemoryArgument(1, gOptions);
-            kernelMath.SetMemoryArgument(2, gCam);
-            kernelMath.SetMemoryArgument(3, outs);
-
-
-            commands.Execute(kernelMath, null, new long[] { lastTriCount }, null, eventList);
-
-
-            commands.ReadFromBuffer(outs, ref screen, true, eventList);
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    frame[x, y, 0] = screen[(x + (y * width)) * 3];
-                    frame[x, y, 1] = screen[((x + (y * width)) * 3) + 1];
-                    frame[x, y, 2] = screen[((x + (y * width)) * 3) + 2];
-                }
-            }
-
-            outs.Dispose();
+            return true;
         }
 
         private static void raycast()
         {
             
-            prepTris();
-
+            if (!prepTris())
+            {
+                return;
+            }
+            
             int width = frame.GetLength(0);
             int height = frame.GetLength(1);
 
@@ -275,23 +243,22 @@ namespace DIRT
             vec eyeVec = eye.toVec();
 
             float f = 0.0155f / 1.75f;
+
             
-            Matrix4x4 rotX = Matrix4x4.rotationXMatrix(Settings.cameraRot.x);
-            Matrix4x4 rotY = Matrix4x4.rotationYMatrix(Settings.cameraRot.y);
-
-            Matrix4x4 rotMat = rotX * rotY;
-
-            Parallel.For(0, height, (y) => {
-                Parallel.For(0, width, (x) => {
+            
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
                     Vector pos = dir + new Vector((x - (width / 2)) * f, (y - (height / 2)) * f);
 
-                    pos *= rotMat;
+                    //pos *= rotMat;
 
                     os[x + (y * width)] = eyeVec;
-                    ds[x + (y * width)+1] = pos.toVec();
-                });
-            });
-
+                    ds[x + (y * width) + 1] = pos.toVec();
+                }
+            }
+            
             List<vec> lights = new List<vec>();
             
             if (gTris == null || gTris.Count == 0)
@@ -311,13 +278,13 @@ namespace DIRT
 
 
             
-            
+
             if (lastTriCount != gTris.Count)
             {
                 origins = new ComputeBuffer<vec>(context, ComputeMemoryFlags.ReadOnly | ComputeMemoryFlags.CopyHostPointer, os);
                 dirs = new ComputeBuffer<vec>(context, ComputeMemoryFlags.ReadOnly | ComputeMemoryFlags.CopyHostPointer, ds);
 
-                outs = new ComputeBuffer<float>(context, ComputeMemoryFlags.WriteOnly, ous.Length);
+                outs = new ComputeBuffer<float>(context, ComputeMemoryFlags.WriteOnly , ous.Length);
 
                 lig = new ComputeBuffer<vec>(context, ComputeMemoryFlags.ReadOnly | ComputeMemoryFlags.CopyHostPointer, lights.ToArray());
             
@@ -330,26 +297,21 @@ namespace DIRT
                 commands.WriteToBuffer(lights.ToArray(), lig, false, eventList);
             }
             
-            
-            kernel.SetMemoryArgument(0, gTris);
-            kernel.SetMemoryArgument(1, lig);
 
-            kernel.SetMemoryArgument(2, gOptions);
-            kernel.SetMemoryArgument(3, origins);
-            kernel.SetMemoryArgument(4, dirs);
+            renderKernel.SetMemoryArgument(0, gTris);
+            renderKernel.SetMemoryArgument(1, lig);
 
-            kernel.SetMemoryArgument(5, gTexture);
+            renderKernel.SetMemoryArgument(2, gOptions);
+            renderKernel.SetMemoryArgument(3, origins);
+            renderKernel.SetMemoryArgument(4, dirs);
 
-            kernel.SetMemoryArgument(6, outs);
-            
-            commands.Execute(kernel, null, new long[] { width * height }, null, eventList);
+            renderKernel.SetMemoryArgument(5, gTexture);
 
-            
+            renderKernel.SetMemoryArgument(6, outs);
+
+            commands.Execute(renderKernel, null, new long[] { width * height }, null, eventList);
+
             commands.ReadFromBuffer(outs, ref ous, true, eventList);
-
-            
-
-            //sw.Stop();
 
             for (int y = 0; y < height; y++)
             {
@@ -361,9 +323,8 @@ namespace DIRT
                 }
             }
 
-            
-
             eventList.Clear();
+
         }
 
         

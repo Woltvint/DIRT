@@ -5,7 +5,7 @@ namespace DIRT
 {
     public static class Settings
     {
-        private static float width = 100;
+        private static float width = 230;
         public static float screenWidth
         {
             get
@@ -18,7 +18,7 @@ namespace DIRT
             }
         }
 
-        private static float height = 100;
+        private static float height = 130;
         public static float screenHeight
         {
             get
@@ -41,15 +41,13 @@ namespace DIRT
 
         public static renderModes renderMode = renderModes.raycast;
 
-        public enum frameUpdateModes
+        public enum screenModes
         {
-            writeAll,
-            writeChanges,
-            screenBuffer,
-            smartWrite
+            trueColor,
+            graySpeed
         }
 
-        public static frameUpdateModes frameUpdateMode = frameUpdateModes.writeChanges;
+        public static screenModes screenMode = screenModes.trueColor;
 
         public enum colorModes
         {

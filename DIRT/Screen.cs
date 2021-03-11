@@ -19,29 +19,24 @@ namespace DIRT
         public static int width = 99;
         public static int height = 99;
 
-        private static readonly object inputLock = new object();
-        private static ConsoleKey input;
+        public static int lastScreenMode = -1;
 
         private static Stopwatch sw = new Stopwatch();
 
         public static List<Triangle> tris = new List<Triangle>();
 
-        //public static string[] charPool = new string[] {"  ", "░ ", "{}", "≡≡", "∑∑",  "‡‡", "@@", "░░", "88", "¶¶",  "ææ", "░▒", "◄►", "▒▒" , "■■", "▄▀",  "▓▒", "▓▓", "▓█", "██" };
-
-        //public static string[] charPool = new string[] { "  ", "░ ", "░}", "{}", "{≡", "≡≡", "≡∑", "∑∑", "∑‡", "‡‡", "‡@", "@@", "@░", "░░", "░8", "88", "8¶", "¶¶", "¶æ", "ææ", "æ░", "░▒", "▒►", "◄►", "◄▒", "▒▒", "▒■", "■■", "■▀", "▄▀", "▀▓", "▓▒", "▓▓", "▓█", "██" };
-
-        //public static string[] charPool = new string[] { "  ", "= ", "} ", " {", "≡ ", "] ", " ‡", "[ ", " ∑", " $", "æ ", " #", "}=", "{=", "◄ ", " ►", " 8", "≡=", "=]", "¶ ", " @", "‡=", "}}", "{}", "≡}", "}]", "{≡", "[=", "≡≡", "]{", "]≡", "‡}", "░ ", "{‡", "≡‡", "]‡", "∑=", "$=", "‡‡", "[}", "=æ", "=#", "[{", "[≡", "][", "=◄", "=►", "=8", "¶=", "[‡", "=@", "∑}", "$}", "∑{", "{$", "∑≡", "$≡", "∑]", "$]", "æ}", "}#", "æ{", "{#", "æ≡", "‡∑", "≡#", "‡$", "◄}", "]æ", "►}", "#]", "}8", "{◄", "}¶", "{►", "{8", "@}", "≡◄", "≡►", "≡8", "{¶", "æ‡", "]◄", "#‡", "]►", "@{", "]8", "≡¶", "@≡", "■ ", "]¶", "░=", "@]", "◄‡", "►‡", "[∑", "8‡", "[$", "‡¶", "▒ ", " ▒", "@‡", "[æ", "#[", "◄[", "∑∑", "[►", "∑$", "[8", "▄ ", "░}", "[¶", "@[", "░{", "░≡", "æ∑", "æ$", "#∑", "#$", "░]", "◄∑", "◄$", "►∑", "►$", "ææ", "░‡", "‡░", "$8", "#æ", "▀ ", "∑¶", "$¶", "@∑", "@$", "◄æ", "æ►", "◄#", "æ8", "#►", "8#", "æ¶", "#¶", "æ@", "#@", "◄◄", "►◄", "8◄", "►8", "░[", "88", "¶◄", "¶►", "¶8", "◄@", "►@", "8@", "=■", "@¶", "@@", "=▒", "▒=", "∑░", "$░", "æ░", "░#", "▄=", "}■", "{■", "◄░", "≡■", "►░", "8░", "]■", "}▒", "▒}", "░¶", "░@", "{▒", "▒{", "≡▒", "▒≡", "‡■", "]▒", "▒]", "=▀", "▄}", "‡▒", "‡▒", "{▄", "≡▄", "▄]", "[■", "‡▄", "[▒", "▒[", "▀}", "{▀", "▀≡", "■∑", "]▀", "■$", "[▄", "‡▀", "▒∑", "∑▒", "$▒", "▒$", "▒$", "#■", "■◄", "æ▒", "æ▒", "►■", "■8", "#▒", "▒#", "■¶", "@■", "▄∑", "▄$", "◄▒", "▀[", "▒◄", "►▒", "▒►", "8▒", "▒8", "¶▒", "▒¶", "@▒", "▒@", "æ▄", "#▄", "◄▄", "►▄", "8▄", "▀∑", "$▀", "¶▄", "@▄", "▀æ", "#▀", "■░", "◄▀", "►▀", "▀8", "▒░", "░▒", "¶▀", "▀@", "▄░", " ▓", "▀░", "■■", "■▒", "▒■", "▒▒", "▒▒", "▄■", "▄▒", "▒▄", "▓=", "▀■", "▀▒", "▒▀", "}▓", "{▓", "≡▓", "▄▀", "]▓", "█ ", "‡▓", "▀▀", "▓[", "∑▓", "$▓", "▓æ", "▓#", "▓◄", "▓►", "▓8", "▓¶", "@▓", "█=", "}█", "█{", "█≡", "▓░", "]█", "‡█", "[█", "█∑", "$█", "█æ", "█#", "◄█", "█►", "█8", "■▓", "█¶", "@█", "▒▓", "▓▒", "▄▓", "█░", "▓▀", "█■", "▒█", "█▒", "▄█", "█▀", "▓█", "██" };
-
-        //public static string[] charPool = new string[] { "  ", "░ ", "░░", "░▒", "▒▒", "▓▒", "▓▓", "▓█", "██" };
-
-        public static string[] charPool = new string[] { " ", "░", "▒", "▓", "█" };
-
         public static string[] colorsText = new string[256];
 
         public static ConsoleGameEngine.ConsoleEngine Engine;
 
-        [DllImport("user32.dll")]
-        static extern int ShowCursor(bool bShow);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll")]
+        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
         public static void draw()
         {
@@ -62,10 +57,11 @@ namespace DIRT
             }
 
 
-
-            ShowCursor(false);
-
-
+            var handle = GetStdHandle(-11);
+            uint mode;
+            GetConsoleMode(handle, out mode);
+            mode |= 4;
+            SetConsoleMode(handle, mode);
 
             Engine = new ConsoleGameEngine.ConsoleEngine((int)Settings.screenWidth+1, (int)Settings.screenHeight+1,8, 8);
             //Engine.Borderless();
@@ -105,12 +101,12 @@ namespace DIRT
                         {
                             for (int x = 0; x < width; x++)
                             {
-                                if ((nextFrame[x, y,0]) <= 0)
-                                    frame[x, y,0] = 0;
-                                else if ((nextFrame[x, y,0]) >= 255)
-                                    frame[x, y,0] = 255;
+                                if ((nextFrame[x, y, 0]) <= 0)
+                                    frame[x, y, 0] = 0;
+                                else if ((nextFrame[x, y, 0]) >= 255)
+                                    frame[x, y, 0] = 255;
                                 else
-                                    frame[x, y,0] = (int)(nextFrame[x, y,0]);
+                                    frame[x, y, 0] = (int)(nextFrame[x, y, 0]);
 
                                 if ((nextFrame[x, y, 1]) <= 0)
                                     frame[x, y, 1] = 0;
@@ -137,60 +133,72 @@ namespace DIRT
                     }
                 }
 
-
-                
-                switch (Settings.frameUpdateMode)
+                if (lastScreenMode != (int)Settings.screenMode)
                 {
-                    case Settings.frameUpdateModes.writeAll:
-                        screenWriteAll();
-                        break;
-                    case Settings.frameUpdateModes.writeChanges:
-                        screenWriteChanges();
-                        break;
-                    case Settings.frameUpdateModes.screenBuffer:
-                        //todo screenbufffunc
-                        break;
-                }
+                    screenWriteAll();
+                    lastScreenMode = (int)Settings.screenMode;
+                    lastFrame = new int[width, height, 3];
 
-                /*
-                
-                for (int y = 0; y < height; y++)
-                {
                     for (int x = 0; x < width; x++)
                     {
-                        ConsoleGameEngine.ConsoleCharacter cc = ConsoleGameEngine.ConsoleCharacter.Full;
-                        
-                        if (frame[x, y,0]/4 >= 0 && frame[x, y,0]/4 < 16)
+                        for (int y = 0; y < height; y++)
                         {
-                            cc = ConsoleGameEngine.ConsoleCharacter.Light;
+                            lastFrame[x, y, 0] = -1;
+                            lastFrame[x, y, 1] = -1;
+                            lastFrame[x, y, 2] = -1;
                         }
-
-                        if (frame[x, y,0]/4 >= 16 && frame[x, y,0]/4 < 32)
-                        {
-                            cc = ConsoleGameEngine.ConsoleCharacter.Medium;
-                        }
-
-                        if (frame[x, y,0]/4 >= 32 && frame[x, y,0]/4 < 48)
-                        {
-                            cc = ConsoleGameEngine.ConsoleCharacter.Dark;
-                        }
-
-                        if (frame[x, y,0]/4 >= 48 && frame[x, y,0]/4 < 64)
-                        {
-                            cc = ConsoleGameEngine.ConsoleCharacter.Full;
-                        }
-
-
-                        Engine.SetPixel(new ConsoleGameEngine.Point(x, y),frame[x,y,0]/16, cc);
-
-                        
-
                     }
-                }*/
 
+                    lastR = -1;
+                    lastG = -1;
+                    lastB = -1;
+                }
+
+                switch (Settings.screenMode)
+                {
+                    case Settings.screenModes.trueColor:
+                        screenWriteChanges();
+                        break;
+                    case Settings.screenModes.graySpeed:
+
+                        for (int y = 0; y < height; y++)
+                        {
+                            for (int x = 0; x < width; x++)
+                            {
+                                float br = (frame[x, y, 0] + frame[x, y, 1] + frame[x, y, 2]) / 3;
+
+                                ConsoleGameEngine.ConsoleCharacter cc = ConsoleGameEngine.ConsoleCharacter.Full;
+
+                                if (br < 64)
+                                {
+                                    cc = ConsoleGameEngine.ConsoleCharacter.Light;
+                                }
+
+                                if (br >= 64 && br < 128)
+                                {
+                                    cc = ConsoleGameEngine.ConsoleCharacter.Medium;
+                                }
+
+                                if (br >= 128 && br < 192)
+                                {
+                                    cc = ConsoleGameEngine.ConsoleCharacter.Dark;
+                                }
+
+                                if (br >= 192)
+                                {
+                                    cc = ConsoleGameEngine.ConsoleCharacter.Full;
+                                }
+
+
+                                Engine.SetPixel(new ConsoleGameEngine.Point(x-1, y-1), frame[x, y, 0] / 16, cc);
+
+                            }
+                        }
+
+                        Engine.DisplayBuffer();
+                        break;
+                }
                 
-
-                //Engine.DisplayBuffer();
                 /*
                 frameClock.Stop();
 
@@ -218,28 +226,10 @@ namespace DIRT
                     fpsCounter.Insert(0, (int)(1000 / sw.ElapsedMilliseconds));
                     fpsCounter.RemoveAt(fpsCounter.Count-1);
                 }
-                
-                //lastColor = 0;
 
-                
-                /*
-
-                lock (inputLock)
-                {
-                    if (Console.KeyAvailable)
-                    {
-                        input = Console.ReadKey().Key;
-                    }
-                    else
-                    {
-                        input = ConsoleKey.NoName;
-                    }
-                }*/
             }
 
         }
-
-
 
         private static void screenWriteAll()
         {
@@ -249,7 +239,7 @@ namespace DIRT
             {
                 for (int x = 0; x < width; x++)
                 {
-                    scChars.AddRange(getColor(frame[x, y,0], frame[x, y, 1],frame[x, y, 2]));
+                    scChars.AddRange(getVirtualTerminalColor(frame[x, y,0], frame[x, y, 1],frame[x, y, 2]));
                 }
 
                 scChars.Add('\n');
@@ -288,7 +278,7 @@ namespace DIRT
                             lastY = y;
                         }
                         
-                        scChars.AddRange(getColor(frame[x, y,0], frame[x, y, 1], frame[x, y, 2]));
+                        scChars.AddRange(getVirtualTerminalColor(frame[x, y,0], frame[x, y, 1], frame[x, y, 2]));
                     }
                 }
             }
@@ -298,31 +288,6 @@ namespace DIRT
             //Console.Write(scChars.ToArray());
 
             Console.Out.WriteAsync(scChars.ToArray());
-        }
-
-        private static bool bufferInicDone = false;
-        private static void moveScreenBuffer()
-        {
-            if (!bufferInicDone)
-            {
-
-            }
-        }
-
-
-        private static char[] getColor(int R, int G, int B)
-        {
-            switch (Settings.colorMode)
-            {
-                case Settings.colorModes.charPoolBrightness:
-                    //return getCharPoolBrightness(pixel);
-                case Settings.colorModes.consoleColor:
-                    break;
-                case Settings.colorModes.virtualTerminalColor:
-                    return getVirtualTerminalColor(R,G,B);
-            }
-
-            return " ".ToCharArray();
         }
 
         private static bool colorChanged(int x,int y)
@@ -343,22 +308,12 @@ namespace DIRT
             return false;
         }
 
-        
-
-        private static char[] getCharPoolBrightness(int pixel)
-        {
-            return charPool[(int)Remap(pixel, 0, 255, 0, charPool.Length-1)].ToCharArray();
-        }
-
-
-
         private static int lastR = 0;
         private static int lastG = 0;
         private static int lastB = 0;
 
         private static char[] getVirtualTerminalColor(int R,int G,int B)
         {
-            //return $"\u001b[38;2;{pixel};{pixel};{pixel}m█".ToCharArray();
             if (lastR == R && lastG == G && lastB == B)
             {
                 return "█".ToCharArray();
@@ -368,7 +323,6 @@ namespace DIRT
                 lastR = R;
                 lastG = G;
                 lastB = B;
-                //return colorsText[pixel].ToCharArray();
                 return $"\u001b[38;2;{R};{G};{B}m█".ToCharArray();
             }
 
@@ -388,144 +342,5 @@ namespace DIRT
 
             return to;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public static void drawPoint(Vector p, float brightness)
-        {
-            int px = (int)MathF.Round(p.x);
-            int py = (int)MathF.Round(p.y);
-
-            if (px < -width / 2 || px > width / 2 - 1)
-            {
-                return;
-            }
-
-            if (py < -height / 2 || py > height / 2 - 1)
-            {
-                return;
-            }
-
-            if (brightness > charPool.Length - 1)
-            {
-                brightness = charPool.Length - 1;
-            }
-            if (brightness < 0)
-            {
-                brightness = 0;
-            }
-            /*
-            if (nextFrame[px + (width / 2), py + (height / 2), 1] > p.z)
-            {
-                nextFrame[px + (width / 2), py + (height / 2), 0] = brightness;
-                nextFrame[px + (width / 2), py + (height / 2), 1] = p.z;
-            }*/
-            
-        }
-
-        public static void drawLine(Vector p1, Vector p2, float brightness)
-        {
-            Vector dir = p2 - p1;
-            float l = MathF.Round(Vector.distance(p1, p2));
-            dir = dir / l;
-
-            for (int i = 0; i < l; i++)
-            {
-                drawPoint(p1 + (dir * i), brightness);
-            }
-
-        }
-        
-        public static void drawTriangle(Triangle t, float brightness)
-        {
-            if ((!testPoint(t.points[0])) && (!testPoint(t.points[1])) && (!testPoint(t.points[2])))
-            {
-                return;
-            }
-            
-            if (Vector.angleDist(Settings.camera, t.normal) < 0)
-            {
-                return;
-            }
-
-            for (int i = 0; i < 3; i++)
-            {
-                Vector dir = t.points[(i+1)%3] - t.points[i];
-                float l = (MathF.Round(Vector.distance(t.points[i], t.points[(i+1)%3])));
-                dir = dir / l;
-
-                for (int j = 0; j < l; j++)
-                {
-                    drawLine(t.points[i] + (dir * j), t.points[(i+2)%3], brightness);
-                }
-            }
-        }
-
-        public static bool testPoint(Vector point)
-        {
-            int px = (int)MathF.Round(point.x);
-            int py = (int)MathF.Round(point.y);
-
-            if (px < -width / 2 || px > width / 2 - 1)
-            {
-                return false;
-            }
-
-            if (py < -height / 2 || py > height / 2 - 1)
-            {
-                return false ;
-            }
-            
-            if (point.z > 0)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
-        public static ConsoleKey getInput()
-        {
-            lock (inputLock)
-            {
-                return input;
-            }
-        }
-
-
-        /*static int CompareTriangleDistance(Triangle t1, Triangle t2)
-        {
-            float dist1 = Vector.distance(t1.middle, eye);
-            float dist2 = Vector.distance(t2.middle, eye);
-
-            if (dist1 == dist2)
-            {
-                return 0;
-            }
-            else
-            {
-                if (dist1 < dist2)
-                {
-                    return -1;
-                }
-                else
-                {
-                    return 1;
-                }
-            }
-        }*/
     }
 }

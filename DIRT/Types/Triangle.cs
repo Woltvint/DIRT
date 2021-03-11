@@ -83,6 +83,7 @@ namespace DIRT.Types
             return (t1.points[0] != t2.points[0]) || (t1.points[1] != t2.points[1]) || (t1.points[2] != t2.points[2]);
         }
 
+
         internal tris toTris()
         {
             tris o = new tris();
