@@ -226,12 +226,13 @@ namespace DIRT
 
         private static void raycast()
         {
-            
+
             if (!prepTris())
             {
                 return;
             }
-            
+
+
             int width = frame.GetLength(0);
             int height = frame.GetLength(1);
 

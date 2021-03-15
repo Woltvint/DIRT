@@ -44,10 +44,10 @@ namespace DIRT
             //ground.makeFromOBJ("Skull.obj");
             //ground.makeFromOBJ("teapot.obj");
             //ground.makeFromOBJ("sphere.obj");
-            //ground.makeFromOBJ("destroyer.obj");
+            ground.makeFromOBJ("destroyer.obj");
             //ground.makeCube(3, 3, 3);
             //ground.makeCubeTextured(4, 4, 4, 48.1f, 16.1f, 111.9f, 79.9f);
-            ground.makeCubeTextured(4, 4, 4, 64.1f, 0.1f, 79.9f, 15.9f);
+            //ground.makeCubeTextured(4, 4, 4, 64.1f, 0.1f, 79.9f, 15.9f);
 
             //ground.makeCubeTextured(4, 4, 4, 0.1f, 80.1f, 127.9f, 207.9f);
             //ground.makeCubeTextured(4, 4, 4, 128.1f, 80.1f, 255.9f, 207.9f);
@@ -61,9 +61,34 @@ namespace DIRT
             ConsoleRenderer.Lights.Add(light);
 
             float rot = -MathF.PI;
+            /*
+            List<Mesh> meshes = new List<Mesh>();
 
+            Random rnd = new Random();
 
+            for (int i = 0; i < 40; i++)
+            {
+                for (int u = 0; u < 20; u++)
+                {
+                    Mesh block = new Mesh(new Vector((i * 4)-(40*2), (u*4)-(20*2), 60), Vector.zero);
 
+                    switch (rnd.Next(0, 3))
+                    {
+                        case 0:
+                            block.makeCubeTextured(4, 4, 4, 16.1f, 0.1f, 31.9f, 15.9f);
+                            break;
+                        case 1:
+                            block.makeCubeTextured(4, 4, 4, 48.1f, 0.1f, 63.9f, 15.9f);
+                            break;
+                        case 2:
+                            block.makeCubeTextured(4, 4, 4, 63.1f, 0.1f, 79.9f, 15.9f);
+                            break;
+                    }
+
+                    meshes.Add(block);
+                }
+            }
+            ConsoleRenderer.Meshes.AddRange(meshes);*/
             /*
             List<Mesh> logo = new List<Mesh>();
 
