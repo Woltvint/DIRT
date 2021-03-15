@@ -5,8 +5,17 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.0.3</Version>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.4</Version>
+    <PackageProjectUrl>https://github.com/Woltvint/DIRT</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Woltvint/DIRT</RepositoryUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <Description>3D console renderer written in C#.</Description>
+    <Authors>Woltvint Němeček</Authors>
+    <Company />
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>3D;Renderer;Rendering;C#;Console;Terminal;GPU</PackageTags>
+    <Copyright />
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +37,17 @@
     <Reference Include="ConsoleGameEngine">
       <HintPath>ConsoleGameEngine.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
