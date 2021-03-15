@@ -52,14 +52,14 @@ namespace DIRT
             //ground.makeCubeTextured(4, 4, 4, 0.1f, 80.1f, 127.9f, 207.9f);
             //ground.makeCubeTextured(4, 4, 4, 128.1f, 80.1f, 255.9f, 207.9f);
             /*Triangle t = new Triangle(new Vector(0, 0, 0), new Vector(4, 4, 0), new Vector(4, 0, 0), new Vector(0, 0), new Vector(16, 16), new Vector(16, 0));
-
+            
             ground.tris.Add(t);*/
             ConsoleRenderer.Meshes.Add(ground);
+            
 
             Vector light = new Vector(-1f, -1, -1f);
             //Vector light = new Vector(-1f, 0, 0);
             ConsoleRenderer.Lights.Add(light);
-
             float rot = -MathF.PI;
             /*
             List<Mesh> meshes = new List<Mesh>();

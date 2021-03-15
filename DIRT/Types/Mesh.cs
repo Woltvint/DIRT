@@ -10,6 +10,11 @@ namespace DIRT.Types
         public Vector rotation;
         public List<Triangle> tris;
 
+        /// <summary>
+        /// Creates a new mesh with position pos and rotation rot
+        /// </summary>
+        /// <param name="pos">the position vector for the new mesh</param>
+        /// <param name="rot">the rotation vector for the new mesh</param>
         public Mesh(Vector pos,Vector rot)
         {
             tris = new List<Triangle>();

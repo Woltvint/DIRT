@@ -8,30 +8,42 @@ namespace DIRT.Types
 
         #region constructors
 
+        /// <summary>
+        /// Creates a new 1D Vector
+        /// </summary>
         public Vector(float _x)
         {
             x = _x;
             y = 0;
             z = 0;
-            w = 1;
+            w = 0;
         }
 
+        /// <summary>
+        /// Creates a new 2D Vector
+        /// </summary>
         public Vector(float _x, float _y)
         {
             x = _x;
             y = _y;
             z = 0;
-            w = 1;
+            w = 0;
         }
 
+        /// <summary>
+        /// Creates a new 3D Vector
+        /// </summary>
         public Vector(float _x, float _y, float _z)
         {
             x = _x;
             y = _y;
             z = _z;
-            w = 1;
+            w = 0;
         }
 
+        /// <summary>
+        /// Creates a new 4D Vector
+        /// </summary>
         public Vector(float _x, float _y, float _z, float _w)
         {
             x = _x;
@@ -40,16 +52,11 @@ namespace DIRT.Types
             w = _w;
         }
 
-        public Vector(Vector v)
-        {
-            x = v.x;
-            y = v.y;
-            z = v.z;
-            w = v.w;
-        }
-
         #endregion
 
+        /// <summary>
+        /// the length of the vector
+        /// </summary>
         public float magnitude
         {
             get
@@ -58,6 +65,9 @@ namespace DIRT.Types
             }
         }
 
+        /// <summary>
+        /// normalized value of the vector
+        /// </summary>
         public Vector normalized
         {
             get
@@ -66,6 +76,11 @@ namespace DIRT.Types
             }
         }
 
+        /// <summary>
+        /// calculates the distance between two points represented by two vectors
+        /// </summary>
+        /// <param name="from">the first point</param>
+        /// <param name="to">the second point</param>
         public static float distance(Vector from, Vector to)
         {
             float _x = from.x - to.x;
@@ -76,6 +91,11 @@ namespace DIRT.Types
             return MathF.Sqrt((_x*_x) + (_y*_y) + (_z*_z) + (_w*_w));
         }
 
+        /// <summary>
+        /// calculates the cross product of two vectors
+        /// </summary>
+        /// <param name="v1">the first vector</param>
+        /// <param name="v2">the second vector</param>
         public static Vector cross(Vector v1, Vector v2)
         {
             Vector v = new Vector();
@@ -87,11 +107,22 @@ namespace DIRT.Types
             return v;
         }
 
+        /// <summary>
+        /// calculates the dot product of two vectors
+        /// </summary>
+        /// <param name="v1">the first vector</param>
+        /// <param name="v2">the second vector</param>
         public static float dot(Vector v1, Vector v2)
         {
             return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
         }
 
+        /// <summary>
+        /// calculates the angle distance between two vectors
+        /// </summary>
+        /// <param name="v1">the first vector</param>
+        /// <param name="v2">the second vector</param>
+        /// <returns>a number from -1 to 1. (-1 = 180°) (0 = 90°) (1 = 0°)</returns>
         public static float angleDist(Vector v1, Vector v2)
         {
             Vector A = v1.normalized;
@@ -150,15 +181,22 @@ namespace DIRT.Types
         }
 
         #endregion
-
+        /// <summary>(0, 0, 1)</summary>
         public static Vector front = new Vector(0, 0, 1);
+        /// <summary>(0, 0,-1)</summary>
         public static Vector back = new Vector(0, 0, -1);
+        /// <summary>(-1, 0, 0)</summary>
         public static Vector left = new Vector(-1, 0, 0);
+        /// <summary>(1, 0, 0)</summary>
         public static Vector right = new Vector(1, 0, 0);
+        /// <summary>(0, 1, 0)</summary>
         public static Vector up = new Vector(0, 1, 0);
+        /// <summary>(0,-1, 0)</summary>
         public static Vector down = new Vector(0, -1, 0);
+        /// <summary>(0, 0, 0)</summary>
         public static Vector zero = new Vector(0, 0, 0, 0);
 
+        //create an GPU acceptable struct from the standart vector struct
         internal vec toVec()
         {
             vec o = new vec();
@@ -168,7 +206,6 @@ namespace DIRT.Types
 
             return o;
         }
-
     }
 
     internal struct vec
