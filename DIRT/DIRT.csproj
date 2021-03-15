@@ -11,9 +11,10 @@
 
   <ItemGroup>
 	  <Content Include="ConsoleGameEngine.dll">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		  <PublishState>Included</PublishState>
-		  <IsAssembly>true</IsAssembly>
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<PublishState>Included</PublishState>
+		<IsAssembly>true</IsAssembly>
+		<PackagePath>lib\$(TargetFramework)</PackagePath>
 	  </Content>
     <EmbeddedResource Include="kernel.c" />
   </ItemGroup>
