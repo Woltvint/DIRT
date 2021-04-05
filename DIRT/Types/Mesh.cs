@@ -10,9 +10,7 @@ namespace DIRT.Types
         public Vector rotation;
         public List<Triangle> tris;
 
-        /// <summary>
-        /// Creates a new mesh with position pos and rotation rot
-        /// </summary>
+        /// <summary>Creates a new mesh with position pos and rotation rot</summary>
         /// <param name="pos">the position vector for the new mesh</param>
         /// <param name="rot">the rotation vector for the new mesh</param>
         public Mesh(Vector pos,Vector rot)
@@ -22,6 +20,10 @@ namespace DIRT.Types
             rotation = rot;
         }
 
+        /// <summary>creates a cuboid of the size specified</summary>
+        /// <param name="sizeX">width</param>
+        /// <param name="sizeY">height</param>
+        /// <param name="sizeZ">depth</param>
         public void makeCube(float sizeX, float sizeY, float sizeZ)
         {
             //front
@@ -49,6 +51,14 @@ namespace DIRT.Types
             tris.Add(new Triangle(new Vector((sizeX / 2), -(sizeY / 2), (sizeZ / 2)), new Vector(-(sizeX / 2), -(sizeY / 2), -(sizeZ / 2)), new Vector((sizeX / 2), -(sizeY / 2), -(sizeZ / 2))));
         }
 
+        /// <summary>creates a textured cuboid of the size specified</summary>
+        /// <param name="sizeX">width</param>
+        /// <param name="sizeY">height</param>
+        /// <param name="sizeZ">depth</param>
+        /// <param name="texSX">texture start X</param>
+        /// <param name="texSY">texture start Y</param>
+        /// <param name="texEX">texture end X</param>
+        /// <param name="texEY">texture end Y</param>
         public Mesh makeCubeTextured(float sizeX, float sizeY, float sizeZ,float texSX, float texSY, float texEX, float texEY)
         {
             //front
@@ -115,6 +125,8 @@ namespace DIRT.Types
             tris.Add(new Triangle(B, D, C));
         }
 
+        /// <summary>loads an obj file to the mesh</summary>
+        /// <param name="path">path to the obj file</param>
         public int makeFromOBJ(string path)
         {
             if (!File.Exists(path))

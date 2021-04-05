@@ -438,13 +438,13 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
     
     dir = vec3MatMult(dir, rotMatX(rot.x));
     dir = vec3MatMult(dir, rotMatY(rot.y));
-    //dir = vec3MatMult(dir, rotMatZ(rot.z));
+    dir = vec3MatMult(dir, rotMatZ(rot.z));
 
 
     int trisCount = _trisCount[0];
 
     float3 light = (float3)(lights[0].x, lights[0].y, lights[0].z);
-    //float3 light = (float3)(1, 1, 1);
+    
 
     float dist = 100;
     int distIndex = -1;
@@ -465,7 +465,6 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
 
         if (intersects(A, B, C, origin, dir, &P))
         {
-            //P = intersectPoint(A, B, C, origin, dir);
 
             float nDist = fast_distance(origin, P);
 
@@ -499,13 +498,15 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
 
         float3 P = intersectPoint(A, B, C, origin, dir);
 
+        
+
         float br = ((angleDist(light, normal(A, B, C))));
 
         if (tA.x < 0)
         {
-            _output[(index * 3)] = br * 255;
-            _output[(index * 3) + 1] = br * 255;
-            _output[(index * 3) + 2] = br * 255;
+            _output[(index * 3)] = ((br+1)/2) * 255;
+            _output[(index * 3) + 1] = ((br + 1) / 2) * 255;
+            _output[(index * 3) + 2] = ((br + 1) / 2) * 255;
         }
         else
         {
@@ -573,3 +574,4 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
    
     
 }
+

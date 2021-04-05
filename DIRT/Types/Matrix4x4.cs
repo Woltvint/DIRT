@@ -6,11 +6,15 @@ namespace DIRT.Types
     {
         public float[,] m;
 
+        /// <summary>creates a matrix with the array specified</summary>
         public Matrix4x4(float[,] mat)
         {
             m = mat;
         }
 
+        /// <summary>constructs and returns the matrix for 3D rotation on the X axis</summary>
+        /// <param name="rot">rotation in radians</param>
+        /// <returns>a matrix for 3D rotation on the X axis</returns>
         internal static Matrix4x4 rotationXMatrix(float rot)
         {
             Matrix4x4 rotMat = new Matrix4x4(new float[4, 4]);
@@ -24,6 +28,9 @@ namespace DIRT.Types
             return rotMat;
         }
 
+        /// <summary>constructs and returns the matrix for 3D rotation on the Y axis</summary>
+        /// <param name="rot">rotation in radians</param>
+        /// <returns>a matrix for 3D rotation on the Y axis</returns>
         internal static Matrix4x4 rotationYMatrix(float rot)
         {
             Matrix4x4 rotMat = new Matrix4x4(new float[4, 4]);
@@ -37,6 +44,9 @@ namespace DIRT.Types
             return rotMat;
         }
 
+        /// <summary>constructs and returns the matrix for 3D rotation on the Z axis</summary>
+        /// <param name="rot">rotation in radians</param>
+        /// <returns>a matrix for 3D rotation on the Z axis</returns>
         internal static Matrix4x4 rotationZMatrix(float rot)
         {
             Matrix4x4 rotMat = new Matrix4x4(new float[4, 4]);
@@ -50,6 +60,7 @@ namespace DIRT.Types
             return rotMat;
         }
 
+        /// <summary>matrix multiplication</summary>
         public static Matrix4x4 operator *(Matrix4x4 m1, Matrix4x4 m2)
         {
             Matrix4x4 matrix = new Matrix4x4(new float[4, 4]);

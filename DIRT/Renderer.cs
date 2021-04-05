@@ -121,8 +121,6 @@ namespace DIRT
                             break;
                         case Settings.renderModes.raycastShadow:
                             break;
-                        case Settings.renderModes.aiRender:
-                            break;
                     }
 
                     sw.Stop();
@@ -143,9 +141,13 @@ namespace DIRT
                     {
                         lastTriCount = (int)gTris.Count;
                     }
-
-                    eventList.Clear();
                 }
+
+                foreach (ComputeEvent e in eventList)
+                {
+                    e.Dispose();
+                }
+                eventList.Clear();
             }
         }
 
@@ -323,8 +325,8 @@ namespace DIRT
                     frame[x, y, 2] = ous[((x + (y * width)) * 3) + 2];
                 }
             }
+            //eventList.Clear();
 
-            eventList.Clear();
 
         }
 

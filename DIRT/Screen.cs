@@ -220,7 +220,7 @@ namespace DIRT
 
                     fps /= fpsCounter.Count;
 
-                    Console.Title = "screen: " + fps + " fps | render: " + Renderer.fps + "fps | triangles: " + Renderer.lastTriCount;
+                    Console.Title = "screen: " + fps + " fps | render: " + Renderer.fps + " fps | triangles: " + Renderer.lastTriCount;
                     
 
                     fpsCounter.Insert(0, (int)(1000 / sw.ElapsedMilliseconds));

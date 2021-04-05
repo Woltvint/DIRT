@@ -13,6 +13,7 @@ namespace DIRT.Types
         public Vector[] points;
         public Vector[] uv;
 
+        /// <summary>textureless triangle constructor</summary>
         public Triangle(Vector p1, Vector p2, Vector p3)
         {
             points = new Vector[3];
@@ -26,6 +27,7 @@ namespace DIRT.Types
             uv[2] = new Vector(-1f, -1f);
         }
 
+        /// <summary>textured triangle constructor</summary>
         public Triangle(Vector p1, Vector p2, Vector p3, Vector t1, Vector t2, Vector t3)
         {
             points = new Vector[3];
@@ -39,6 +41,7 @@ namespace DIRT.Types
             uv[2] = t3;
         }
 
+        /// <summary>textureless triangle constructor</summary>
         public Triangle(Vector[] ps)
         {
             points = ps;
@@ -48,12 +51,14 @@ namespace DIRT.Types
             uv[2] = new Vector(-1f, -1f);
         }
 
+        /// <summary>textured triangle constructor</summary>
         public Triangle(Vector[] ps, Vector[] uvs)
         {
             points = ps;
             uv = uvs;
         }
 
+        /// <summary>the normal of the triangle</summary>
         public Vector normal
         {
             get
@@ -65,6 +70,7 @@ namespace DIRT.Types
             }
         }
 
+        /// <summary>the middle point of the triangle</summary>
         public Vector middle
         {
             get
@@ -73,17 +79,19 @@ namespace DIRT.Types
             }
         }
 
+        /// <summary>triangles equal</summary>
         public static bool operator ==(Triangle t1, Triangle t2)
         {
             return (t1.points[0] == t2.points[0]) && (t1.points[1] == t2.points[1]) && (t1.points[2] == t2.points[2]);
         }
 
+        /// <summary>triangles different</summary>
         public static bool operator !=(Triangle t1, Triangle t2)
         {
             return (t1.points[0] != t2.points[0]) || (t1.points[1] != t2.points[1]) || (t1.points[2] != t2.points[2]);
         }
 
-
+        //create an GPU acceptable struct from the standard triangle struct
         internal tris toTris()
         {
             tris o = new tris();
@@ -100,6 +108,7 @@ namespace DIRT.Types
         }
     }
 
+    //internal structure for the GPU
     internal struct tris
     {
         public vec p1;
