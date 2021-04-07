@@ -37,19 +37,22 @@ namespace DIRT
             DIRT.Meshes.Add(m);*/
 
             //Mesh ground = new Mesh(new Vector(0, 0,100, 0), new Vector(0, 0, 0, 0));
-            Mesh ground = new Mesh(new Vector(0, 0, 10f, 0), new Vector(-MathF.PI / 4, -MathF.PI/5, -MathF.PI/3, 0));
+            Mesh ground = new Mesh(new Vector(0, 0, 10f, 0), /*new Vector(-MathF.PI / 4, -MathF.PI/5, -MathF.PI/3, 0)*/ Vector.zero);
             //ground.makeFromOBJ("Skull.obj");
-            ground.makeFromOBJ("teapot.obj");
+            //ground.makeFromOBJ("teapot.obj");
             //ground.makeFromOBJ("sphere.obj");
             //ground.makeFromOBJ("donut.obj");
-            //ground.makeCube(4, 4, 4);
+            ground.makeCube(4, 4, 4);
+            ground.makeCube(1, 1, 8);
+            ground.makeCube(1, 8, 1);
+            ground.makeCube(8, 1, 1);
             //ground.makeCubeTextured(4, 4, 4, 48.1f, 16.1f, 111.9f, 79.9f);
             //ground.makeCubeTextured(4, 4, 4, 64.1f, 0.1f, 79.9f, 15.9f);
 
             //ground.makeCubeTextured(4, 4, 4, 0.1f, 80.1f, 127.9f, 207.9f);
             //ground.makeCubeTextured(4, 4, 4, 128.1f, 80.1f, 255.9f, 207.9f);
             //Triangle t = new Triangle(new Vector(0, 0, 0), new Vector(4, 4, 0), new Vector(4, 0, 0), new Vector(16, 0), new Vector(32, 16), new Vector(32, 0));
-            
+
             //ground.tris.Add(t);
             ConsoleRenderer.Meshes.Add(ground);
 

@@ -112,19 +112,6 @@ namespace DIRT.Types
             return this;
         }
 
-        public void makePyramid(float size)
-        {
-            Vector A = new Vector(-(size / 2), -(size / 2), -(size / 2));
-            Vector B = new Vector((size / 2), -(size / 2), -(size / 2));
-            Vector C = new Vector(0.5f * (size / 2), -(size / 2), 0.86603f * (size / 2));
-            Vector D = new Vector(0.5f * (size / 2), 0.8165f * (size / 2), 0.62201f * (size / 2));
-
-            tris.Add(new Triangle(A, B, C));
-            tris.Add(new Triangle(A, D, B));
-            tris.Add(new Triangle(A, C, D));
-            tris.Add(new Triangle(B, D, C));
-        }
-
         /// <summary>loads an obj file to the mesh</summary>
         /// <param name="path">path to the obj file</param>
         public int makeFromOBJ(string path)

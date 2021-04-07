@@ -389,12 +389,12 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
         float3 camPos = (float3)(camera[0].x, camera[0].y, camera[0].z);
         float3 camLook = (float3)(camera[1].x, camera[1].y, camera[1].z);
 
-        if (angleDist(camLook, n) > 0)
+        /*if (angleDist(camLook, n) > 0)
             tris[i].visible = 0;
         else
             tris[i].visible = 1;
 
-        /*if (angleDist(points[0] - camPos, camLook) < 0)
+        if (angleDist(points[0] - camPos, camLook) < 0)
             tris[i].visible = 0;
         else
             tris[i].visible = 1;
@@ -424,6 +424,8 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
         tris[i].p3.x = points[2].x;
         tris[i].p3.y = points[2].y;
         tris[i].p3.z = points[2].z;
+
+        tris[i].visible = 1;
 } 
 
 __kernel void ray(global struct tri* tris, global struct vec* lights, global int* _trisCount, global struct vec* _origin, global struct vec* _dir, global float* texture, global float* _output) {
@@ -555,7 +557,9 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
 
             if (intersectsShadow(sA, sB, sC, P, light))
             {
-                change += -16;
+                _output[index * 3] *= 0.9f;
+                _output[(index * 3) + 1] *= 0.9f;
+                _output[(index * 3) + 2] *= 0.9f;
                 break;
             }
 
