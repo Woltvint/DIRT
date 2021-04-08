@@ -179,8 +179,8 @@ namespace DIRT
 
                         int x = (sc.Width / 2) + sc.Left - mp.X;
                         int y = (sc.Height / 2) + sc.Top - mp.Y;
-                        Settings.cameraRot.y += (float)x / 1500f;
-                        Settings.cameraRot.x += (float)y / 1500f;
+                        ConsoleSettings.cameraRot.y += (float)x / 1500f;
+                        ConsoleSettings.cameraRot.x += (float)y / 1500f;
 
                         SetCursorPos((sc.Width / 2) + sc.Left, (sc.Height / 2) + sc.Top);
                     }
@@ -193,30 +193,30 @@ namespace DIRT
 
                     if (ConsoleRenderer.keyPressed(ConsoleKey.W))
                     {
-                        Settings.camera += new Vector(MathF.Sin(-Settings.cameraRot.y), MathF.Sin(-Settings.cameraRot.x), MathF.Cos(-Settings.cameraRot.y)) / 10f;
+                        ConsoleSettings.camera += new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y), MathF.Sin(-ConsoleSettings.cameraRot.x), MathF.Cos(-ConsoleSettings.cameraRot.y)) / 10f;
                     }
                     if (ConsoleRenderer.keyPressed(ConsoleKey.S))
                     {
-                        Settings.camera -= new Vector(MathF.Sin(-Settings.cameraRot.y), MathF.Sin(-Settings.cameraRot.x), MathF.Cos(-Settings.cameraRot.y)) / 10f;
+                        ConsoleSettings.camera -= new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y), MathF.Sin(-ConsoleSettings.cameraRot.x), MathF.Cos(-ConsoleSettings.cameraRot.y)) / 10f;
                     }
 
                     if (ConsoleRenderer.keyPressed(ConsoleKey.E))
                     {
-                        Settings.camera -= new Vector(0, 0.1f, 0);
+                        ConsoleSettings.camera -= new Vector(0, 0.1f, 0);
                     }
                     if (ConsoleRenderer.keyPressed(ConsoleKey.Q))
                     {
-                        Settings.camera += new Vector(0, 0.1f, 0);
+                        ConsoleSettings.camera += new Vector(0, 0.1f, 0);
                     }
 
 
                     if (ConsoleRenderer.keyPressed(ConsoleKey.NumPad1))
                     {
-                        Settings.screenMode = Settings.screenModes.trueColor;
+                        ConsoleSettings.screenMode = ConsoleSettings.screenModes.trueColor;
                     }
                     if (ConsoleRenderer.keyPressed(ConsoleKey.NumPad2))
                     {
-                        Settings.screenMode = Settings.screenModes.graySpeed;
+                        ConsoleSettings.screenMode = ConsoleSettings.screenModes.graySpeed;
                     }
 
                 }

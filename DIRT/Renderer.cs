@@ -13,7 +13,7 @@ namespace DIRT
 {
     internal static class Renderer
     {
-        public static float[,,] frame = new float[(int)Settings.screenWidth, (int)Settings.screenHeight, 3];
+        public static float[,,] frame = new float[(int)ConsoleSettings.screenWidth, (int)ConsoleSettings.screenHeight, 3];
         public static readonly object renderLock = new object();
 
         public static int fps = 0;
@@ -99,7 +99,7 @@ namespace DIRT
 
                 lock (renderLock)
                 {
-                    eye = Settings.camera;
+                    eye = ConsoleSettings.camera;
 
                     if (Screen.frameReady)
                     {
@@ -107,7 +107,7 @@ namespace DIRT
                     }
                     else
                     {
-                        frame = new float[(int)Settings.screenWidth, (int)Settings.screenHeight,3];
+                        frame = new float[(int)ConsoleSettings.screenWidth, (int)ConsoleSettings.screenHeight,3];
                     }
 
                     sw.Restart();
@@ -159,8 +159,8 @@ namespace DIRT
             cam[0] = eye.toVec();
             Vector look = new Vector(0, 0, 1, 0);
             Vector up = new Vector(0, 1, 0, 0);
-            look *= Matrix4x4.rotationXMatrix(Settings.cameraRot.x);
-            look *= Matrix4x4.rotationYMatrix(Settings.cameraRot.y);
+            look *= Matrix4x4.rotationXMatrix(ConsoleSettings.cameraRot.x);
+            look *= Matrix4x4.rotationYMatrix(ConsoleSettings.cameraRot.y);
             cam[1] = look.toVec();
             cam[2] = up.toVec();
 
@@ -232,7 +232,7 @@ namespace DIRT
             vec[] os = new vec[width * height];
             vec[] ds = new vec[width * height+1];
 
-            ds[0] = Settings.cameraRot.toVec();
+            ds[0] = ConsoleSettings.cameraRot.toVec();
 
             vec eyeVec = eye.toVec();
 

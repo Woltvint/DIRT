@@ -56,9 +56,7 @@ namespace DIRT
                 lastFrame = frame;
             }
 
-            //Engine.Borderless();
-
-            if (Settings.screenAutoSize)
+            if (ConsoleSettings.screenAutoSize)
             {
                 int w = 0;
                 int h = 0;
@@ -71,7 +69,6 @@ namespace DIRT
                     try
                     {
                         new ConsoleGameEngine.ConsoleEngine(i, 20, 8, 8);
-                        //Console.WindowWidth = i;
                     }
                     catch (System.ArgumentOutOfRangeException)
                     {
@@ -87,7 +84,6 @@ namespace DIRT
                     try
                     {
                         new ConsoleGameEngine.ConsoleEngine(20, i, 8, 8);
-                        //Console.WindowHeight = i;
                     }
                     catch (System.ArgumentOutOfRangeException)
                     {
@@ -96,11 +92,11 @@ namespace DIRT
                     h = i - 2;
                 }
 
-                Settings.screenHeight = h - 2;
-                Settings.screenWidth = w - 2;
+                ConsoleSettings.screenHeight = h - 2;
+                ConsoleSettings.screenWidth = w - 2;
             }
 
-            Engine = new ConsoleGameEngine.ConsoleEngine((int)Settings.screenWidth + 1, (int)Settings.screenHeight + 1, 8, 8);
+            Engine = new ConsoleGameEngine.ConsoleEngine((int)ConsoleSettings.screenWidth + 1, (int)ConsoleSettings.screenHeight + 1, 8, 8);
             
             ConsoleGameEngine.Color[] colors = new ConsoleGameEngine.Color[16];
 
@@ -109,6 +105,7 @@ namespace DIRT
             GetConsoleMode(handle, out mode);
             mode |= 4;
             SetConsoleMode(handle, mode);
+
 
             for (int i = 0; i < 16; i++)
             {
@@ -125,7 +122,6 @@ namespace DIRT
 
             while (true)
             {
-
                 sw.Restart();
                 //frameClock.Restart();
 
@@ -174,10 +170,10 @@ namespace DIRT
                     }
                 }
 
-                if (lastScreenMode != (int)Settings.screenMode)
+                if (lastScreenMode != (int)ConsoleSettings.screenMode)
                 {
                     screenWriteAll();
-                    lastScreenMode = (int)Settings.screenMode;
+                    lastScreenMode = (int)ConsoleSettings.screenMode;
                     lastFrame = new int[width, height, 3];
 
                     for (int x = 0; x < width; x++)
@@ -195,12 +191,12 @@ namespace DIRT
                     lastB = -1;
                 }
 
-                switch (Settings.screenMode)
+                switch (ConsoleSettings.screenMode)
                 {
-                    case Settings.screenModes.trueColor:
+                    case ConsoleSettings.screenModes.trueColor:
                         screenWriteChanges();
                         break;
-                    case Settings.screenModes.graySpeed:
+                    case ConsoleSettings.screenModes.graySpeed:
 
                         for (int y = 0; y < height; y++)
                         {

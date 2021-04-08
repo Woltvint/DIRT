@@ -3,9 +3,10 @@ using DIRT.Types;
 
 namespace DIRT
 {
-    public static class Settings
+    public static class ConsoleSettings
     {
         private static float width = 230;
+        /// <summary>the width of the console window in characters</summary>
         public static float screenWidth
         {
             get
@@ -19,6 +20,7 @@ namespace DIRT
         }
 
         private static float height = 130;
+        /// <summary>the height of the console window in characters</summary>
         public static float screenHeight
         {
             get
@@ -31,6 +33,7 @@ namespace DIRT
             }
         }
 
+        /// <summary>auto find the best screen size</summary>
         public static bool screenAutoSize = false;
 
         public enum screenModes
@@ -38,11 +41,10 @@ namespace DIRT
             trueColor,
             graySpeed
         }
-
+        /// <summary>mode in which the screen will run</summary>
         public static screenModes screenMode = screenModes.trueColor;
 
-        public static Vector camera = new Vector(0,0,-1);
+        public static Vector camera = new Vector(0,0,0);
         public static Vector cameraRot = new Vector(0, 0, 0);
-        public static Vector light = new Vector(1,1,1);
     }
 }
