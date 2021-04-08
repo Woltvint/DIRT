@@ -112,16 +112,7 @@ namespace DIRT
 
                     sw.Restart();
 
-                    switch (Settings.renderMode)
-                    {
-                        case Settings.renderModes.mathWay:
-                            break;
-                        case Settings.renderModes.raycast:
-                            raycast();
-                            break;
-                        case Settings.renderModes.raycastShadow:
-                            break;
-                    }
+                    raycast();
 
                     sw.Stop();
 
@@ -245,8 +236,9 @@ namespace DIRT
 
             vec eyeVec = eye.toVec();
 
-            float f = 0.0155f / 1.75f;
+            //float f = 0.0155f / 1.75f;
 
+            float f = 0.01f;
             
             
             for (int y = 0; y < height; y++)

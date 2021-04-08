@@ -31,15 +31,7 @@ namespace DIRT
             }
         }
 
-        public enum renderModes
-        {
-            mathWay,
-            raycast,
-            raycastShadow,
-            aiRender
-        }
-
-        public static renderModes renderMode = renderModes.raycast;
+        public static bool screenAutoSize = false;
 
         public enum screenModes
         {
@@ -48,16 +40,6 @@ namespace DIRT
         }
 
         public static screenModes screenMode = screenModes.trueColor;
-
-        public enum colorModes
-        {
-            charPoolBrightness,
-            consoleColor,
-            virtualTerminalColor
-        }
-
-        public static colorModes colorMode = colorModes.virtualTerminalColor;
-
 
         public static Vector camera = new Vector(0,0,-1);
         public static Vector cameraRot = new Vector(0, 0, 0);

@@ -56,18 +56,59 @@ namespace DIRT
                 lastFrame = frame;
             }
 
+            //Engine.Borderless();
+
+            if (Settings.screenAutoSize)
+            {
+                int w = 0;
+                int h = 0;
+
+                new ConsoleGameEngine.ConsoleEngine(20, 20, 8, 8);
+
+                for (int i = 20; i <= 1000; i += 10)
+                {
+
+                    try
+                    {
+                        new ConsoleGameEngine.ConsoleEngine(i, 20, 8, 8);
+                        //Console.WindowWidth = i;
+                    }
+                    catch (System.ArgumentOutOfRangeException)
+                    {
+                        break;
+                    }
+                    w = i - 2;
+
+                }
+
+                for (int i = 20; i <= 1000; i += 10)
+                {
+
+                    try
+                    {
+                        new ConsoleGameEngine.ConsoleEngine(20, i, 8, 8);
+                        //Console.WindowHeight = i;
+                    }
+                    catch (System.ArgumentOutOfRangeException)
+                    {
+                        break;
+                    }
+                    h = i - 2;
+                }
+
+                Settings.screenHeight = h - 2;
+                Settings.screenWidth = w - 2;
+            }
+
+            Engine = new ConsoleGameEngine.ConsoleEngine((int)Settings.screenWidth + 1, (int)Settings.screenHeight + 1, 8, 8);
+            
+            ConsoleGameEngine.Color[] colors = new ConsoleGameEngine.Color[16];
 
             var handle = GetStdHandle(-11);
             uint mode;
             GetConsoleMode(handle, out mode);
             mode |= 4;
             SetConsoleMode(handle, mode);
-
-            Engine = new ConsoleGameEngine.ConsoleEngine((int)Settings.screenWidth+1, (int)Settings.screenHeight+1,8, 8);
-            //Engine.Borderless();
-            
-
-            ConsoleGameEngine.Color[] colors = new ConsoleGameEngine.Color[16];
 
             for (int i = 0; i < 16; i++)
             {

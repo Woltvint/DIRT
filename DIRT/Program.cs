@@ -149,6 +149,7 @@ namespace DIRT
 
             ConsoleRenderer.textureMap = (Bitmap)Image.FromFile("textureMap.png");
 
+
             bool capture = false;
             //ground.rotation.z = 10;
             while (true)

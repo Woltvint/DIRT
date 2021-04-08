@@ -93,18 +93,30 @@ namespace DIRT
         {
             get
             {
-                return Screen.Engine.GetMouseLeft();
+                if (Screen.Engine != null)
+                {
+                    return Screen.Engine.GetMouseLeft();
+                }
+                return false;
             }
         }
 
         public static bool keyDown(ConsoleKey key)
         {
-            return Screen.Engine.GetKeyDown(key);
+            if (Screen.Engine != null)
+            {
+                return Screen.Engine.GetKeyDown(key);
+            }
+            return false;
         }
 
         public static bool keyPressed(ConsoleKey key)
         {
-            return Screen.Engine.GetKey(key);
+            if (Screen.Engine != null)
+            {
+                return Screen.Engine.GetKey(key);
+            }
+            return false;
         }
 
     }
