@@ -72,11 +72,11 @@ namespace DIRT
         {
             if (ComputePlatform.Platforms.Count > 1)
             {
-                context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[0]), null, IntPtr.Zero);
+                context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[1]), null, IntPtr.Zero);
             }
             else
             {
-                context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[1]), null, IntPtr.Zero);
+                context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[0]), null, IntPtr.Zero);
             }
 
             
