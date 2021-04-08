@@ -70,7 +70,16 @@ namespace DIRT
 
         public static void render()
         {
-            context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[0]), null, IntPtr.Zero);
+            if (ComputePlatform.Platforms.Count > 1)
+            {
+                context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[0]), null, IntPtr.Zero);
+            }
+            else
+            {
+                context = new ComputeContext(ComputeDeviceTypes.All, new ComputeContextPropertyList(ComputePlatform.Platforms[1]), null, IntPtr.Zero);
+            }
+
+            
 
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "DIRT.kernel.c";

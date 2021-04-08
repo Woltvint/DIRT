@@ -6,7 +6,7 @@
     <Platforms>AnyCPU;x64</Platforms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <PackageProjectUrl>https://github.com/Woltvint/DIRT</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Woltvint/DIRT</RepositoryUrl>
     <PackageIcon>icon.png</PackageIcon>
@@ -15,7 +15,7 @@
     <Company />
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>3D;Renderer;Rendering;C#;Console;Terminal;GPU</PackageTags>
-    <Copyright>Woltvint Němeček</Copyright>
+    <Copyright></Copyright>
   </PropertyGroup>
 
   <ItemGroup>
