@@ -112,6 +112,69 @@ namespace DIRT.Types
             return this;
         }
 
+        public Mesh makeCubeTexturedOffset(Vector size, float texSX, float texSY, float texEX, float texEY, Vector off)
+        {
+            List<Triangle> tri = new List<Triangle>();
+            //front
+            tri.Add(new Triangle(new Vector(-(size.x / 2), -(size.y / 2), -(size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), -(size.z / 2)), new Vector((size.x / 2), (size.y / 2), -(size.z / 2))
+                , new Vector(texSX, texSY), new Vector(texSX, texEY), new Vector(texEX, texEY)
+            ));
+            tri.Add(new Triangle(new Vector(-(size.x / 2), -(size.y / 2), -(size.z / 2)), new Vector((size.x / 2), (size.y / 2), -(size.z / 2)), new Vector((size.x / 2), -(size.y / 2), -(size.z / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texEY), new Vector(texEX, texSY)
+            ));
+
+            //back
+            tri.Add(new Triangle(new Vector((size.x / 2), -(size.y / 2), (size.z / 2)), new Vector((size.x / 2), (size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), (size.z / 2))
+                , new Vector(texEX, texSY), new Vector(texEX, texEY), new Vector(texSX, texEY)
+            ));
+            tri.Add(new Triangle(new Vector((size.x / 2), -(size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), -(size.y / 2), (size.z / 2))
+                , new Vector(texEX, texSY), new Vector(texSX, texEY), new Vector(texSX, texSY)
+            ));
+
+            //left
+            tri.Add(new Triangle(new Vector((size.x / 2), -(size.y / 2), -(size.z / 2)), new Vector((size.x / 2), (size.y / 2), -(size.z / 2)), new Vector((size.x / 2), (size.y / 2), (size.z / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texSY), new Vector(texEX, texEY)
+            ));
+            tri.Add(new Triangle(new Vector((size.x / 2), -(size.y / 2), -(size.z / 2)), new Vector((size.x / 2), (size.y / 2), (size.z / 2)), new Vector((size.x / 2), -(size.y / 2), (size.z / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texEY), new Vector(texSX, texEY)
+            ));
+
+            //right
+            tri.Add(new Triangle(new Vector(-(size.x / 2), -(size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), -(size.z / 2))
+                , new Vector(texSX, texEY), new Vector(texEX, texEY), new Vector(texEX, texSY)
+            ));
+            tri.Add(new Triangle(new Vector(-(size.x / 2), -(size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), -(size.z / 2)), new Vector(-(size.x / 2), -(size.y / 2), -(size.z / 2))
+                , new Vector(texSX, texEY), new Vector(texEX, texSY), new Vector(texSX, texSY)
+            ));
+
+            //top
+            tri.Add(new Triangle(new Vector(-(size.x / 2), (size.y / 2), -(size.z / 2)), new Vector(-(size.x / 2), (size.y / 2), (size.z / 2)), new Vector((size.x / 2), (size.y / 2), (size.z / 2))
+                , new Vector(texSX, texSY), new Vector(texSX, texEY), new Vector(texEX, texEY)
+            ));
+            tri.Add(new Triangle(new Vector(-(size.x / 2), (size.y / 2), -(size.z / 2)), new Vector((size.x / 2), (size.y / 2), (size.z / 2)), new Vector((size.x / 2), (size.y / 2), -(size.z / 2))
+                , new Vector(texSX, texSY), new Vector(texEX, texEY), new Vector(texEX, texSY)
+            ));
+
+            //bottom
+            tri.Add(new Triangle(new Vector((size.x / 2), -(size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), -(size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), -(size.y / 2), -(size.z / 2))
+                , new Vector(texEX, texEY), new Vector(texSX, texEY), new Vector(texSX, texSY)
+            ));
+            tri.Add(new Triangle(new Vector((size.x / 2), -(size.y / 2), (size.z / 2)), new Vector(-(size.x / 2), -(size.y / 2), -(size.z / 2)), new Vector((size.x / 2), -(size.y / 2), -(size.z / 2))
+                , new Vector(texEX, texEY), new Vector(texSX, texSY), new Vector(texEX, texSY)
+            ));
+
+            for (int i = 0; i < tri.Count; i++)
+            {
+                tri[i].points[0] += off;
+                tri[i].points[1] += off;
+                tri[i].points[2] += off;
+            }
+
+            tris.AddRange(tri);
+
+            return this;
+        }
+
         /// <summary>loads an obj file to the mesh</summary>
         /// <param name="path">path to the obj file</param>
         public int makeFromOBJ(string path)
