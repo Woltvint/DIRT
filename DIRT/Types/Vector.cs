@@ -110,6 +110,21 @@ namespace DIRT.Types
             return dot(A, B);
         }
 
+        /// <summary>rotates a vector</summary>
+        /// <param name="v">the vector to be rotated</param>
+        /// <param name="angle">the rotation vector</param>
+        /// <returns>a rotated vector</returns>
+        public static Vector rotate(Vector v, Vector angle)
+        {
+            Vector o = v;
+
+            o *= Matrix4x4.rotationXMatrix(angle.x);
+            o *= Matrix4x4.rotationYMatrix(angle.y);
+            o *= Matrix4x4.rotationZMatrix(angle.z);
+
+            return o;
+        }
+
         #region operators
 
         /// <summary>vector addition</summary>

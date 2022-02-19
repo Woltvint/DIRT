@@ -167,7 +167,7 @@ namespace DIRT
             Point mp = new Point();
             GetCursorPos(out mp);
 
-            ConsoleRenderer.textureMap = (Bitmap)Image.FromFile("textureMap.png");
+            //ConsoleRenderer.textureMap = (Bitmap)Image.FromFile("textureMap.png");
 
 
             bool capture = false;
