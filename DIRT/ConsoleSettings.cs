@@ -36,6 +36,12 @@ namespace DIRT
         /// <summary>auto find the best screen size</summary>
         public static bool screenAutoSize = false;
 
+        /// <summary>a distance after which triangles stop being rendered</summary>
+        public static float renderDistance = 1000;
+
+        /// <summary>the color of the sky (RGB default black)</summary>
+        public static Vector backgroundColor = Vector.zero;
+
         public enum screenModes
         {
             trueColor,

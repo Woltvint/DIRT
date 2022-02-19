@@ -27,6 +27,10 @@ namespace DIRT
 
         static void Main(string[] args)
         {
+            ConsoleSettings.screenAutoSize = true;
+            ConsoleSettings.renderDistance = 6;
+            ConsoleSettings.backgroundColor = new Vector(0, 255, 0);
+
             ConsoleRenderer.startRenderer();
             /*
             Mesh m = new Mesh(new Vector(0,0.5f,2,0), new Vector(0,0,MathF.PI,0));
@@ -37,15 +41,21 @@ namespace DIRT
             DIRT.Meshes.Add(m);*/
 
             //Mesh ground = new Mesh(new Vector(0, 0,100, 0), new Vector(0, 0, 0, 0));
-            Mesh ground = new Mesh(new Vector(0, 0, 10f, 0), /*new Vector(-MathF.PI / 4, -MathF.PI/5, -MathF.PI/3, 0)*/ Vector.zero);
+            //Mesh ground = new Mesh(new Vector(0.1f, 5f, 10.1f), Vector.zero);
+            Mesh ground = new Mesh(new Vector(0.1f, 0.1f, 7.1f), Vector.zero);
             //ground.makeFromOBJ("Skull.obj");
-            //ground.makeFromOBJ("teapot.obj");
+            ground.makeFromOBJ("teapot.obj");
             //ground.makeFromOBJ("sphere.obj");
-            //ground.makeFromOBJ("donut.obj");
-            ground.makeCube(4, 4, 4);
-            ground.makeCube(1, 1, 8);
+            //ground.makeFromOBJ("destroyer.obj");
+
+            //ground.makeCube(50, 1, 50);
+            //ground.makeCubeTextured(50, 1, 50, 64.1f, 0.1f, 79.9f, 15.9f);
+            //ground.makeCubeTextured(50, 1, 50, 16.1f, 0.1f, 31.9f, 15.9f);
+
+            /*ground.makeCube(1, 1, 8);
             ground.makeCube(1, 8, 1);
-            ground.makeCube(8, 1, 1);
+            ground.makeCube(8, 1, 1);*/
+
             //ground.makeCubeTextured(4, 4, 4, 48.1f, 16.1f, 111.9f, 79.9f);
             //ground.makeCubeTextured(4, 4, 4, 64.1f, 0.1f, 79.9f, 15.9f);
 
@@ -55,6 +65,16 @@ namespace DIRT
 
             //ground.tris.Add(t);
             ConsoleRenderer.Meshes.Add(ground);
+
+
+            /*Mesh cube = new Mesh(new Vector(0, 0, 10f), Vector.zero);
+            //cube.makeCube(3, 3, 3);
+            //cube.makeCubeTextured(5,5,5, 80.1f, 0.1f, 95.9f, 15.9f);
+            cube.makeCubeTextured(5, 5, 5, 48.1f, 0.1f, 63.9f, 15.9f);
+            /*cube.makeCube(1, 6, 1);
+            cube.makeCube(6, 1, 1);
+            cube.makeCube(1, 1, 6);
+            ConsoleRenderer.Meshes.Add(cube);*/
 
 
             Vector light = new Vector(-1f, -1, -1f);
@@ -133,12 +153,12 @@ namespace DIRT
             Mesh veda = new Mesh(new Vector(14, -4, 10), Vector.zero);
             veda.makeCubeTextured(4, 4, 4, 128.1f, 80.1f, 255.9f, 207.9f);
 
-            ConsoleRenderer.Meshes.Add(rysboi);
-            ConsoleRenderer.Meshes.Add(veda);
-            ConsoleRenderer.Meshes.AddRange(logo);
+            //ConsoleRenderer.Meshes.Add(rysboi);
+            //ConsoleRenderer.Meshes.Add(veda);
+            ConsoleRenderer.Meshes.AddRange(logo);*/
 
-            */
-
+            
+            
 
 
             Rectangle sc = new Rectangle();
@@ -156,7 +176,7 @@ namespace DIRT
             {
                 Thread.Sleep(16);
                 rot += 0.01f;
-
+                //ConsoleSettings.renderDistance += 0.01f;
                 lock (ConsoleRenderer.renderLock)
                 {
                     /*veda.rotation.x += 0.005f;
@@ -167,11 +187,15 @@ namespace DIRT
                     rysboi.rotation.y += 0.002f;
                     rysboi.rotation.z += 0.007f;*/
 
-                    ground.rotation.x += 0.005f;
-                    ground.rotation.y += 0.002f;
-                    ground.rotation.z += 0.007f;
+                    ground.rotation.x += 0.03f;
+                    ground.rotation.y += 0.01f;
+                    ground.rotation.z += 0.05f;
 
                     //DIRT.Lights[0] = new Vector(MathF.Cos(rot), -0.25f, MathF.Sin(rot));
+
+                    /*cube.rotation.x += 0.03f;
+                    cube.rotation.y += 0.01f;
+                    cube.rotation.z += 0.05f;*/
 
                     if (capture)
                     {
@@ -193,20 +217,29 @@ namespace DIRT
 
                     if (ConsoleRenderer.keyPressed(ConsoleKey.W))
                     {
-                        ConsoleSettings.camera += new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y), MathF.Sin(-ConsoleSettings.cameraRot.x), MathF.Cos(-ConsoleSettings.cameraRot.y)) / 10f;
+                        //ConsoleSettings.camera += new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y), MathF.Sin(-ConsoleSettings.cameraRot.x), MathF.Cos(-ConsoleSettings.cameraRot.y)) / 10f;
                     }
                     if (ConsoleRenderer.keyPressed(ConsoleKey.S))
                     {
-                        ConsoleSettings.camera -= new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y), MathF.Sin(-ConsoleSettings.cameraRot.x), MathF.Cos(-ConsoleSettings.cameraRot.y)) / 10f;
+                        //ConsoleSettings.camera -= new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y), MathF.Sin(-ConsoleSettings.cameraRot.x), MathF.Cos(-ConsoleSettings.cameraRot.y)) / 10f;
+                    }
+
+                    if (ConsoleRenderer.keyPressed(ConsoleKey.D))
+                    {
+                        //ConsoleSettings.camera += new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y + (MathF.PI / 2)), 0, MathF.Cos(-ConsoleSettings.cameraRot.y + (MathF.PI / 2))) / 10f;
+                    }
+                    if (ConsoleRenderer.keyPressed(ConsoleKey.A))
+                    {
+                        //ConsoleSettings.camera -= new Vector(MathF.Sin(-ConsoleSettings.cameraRot.y + (MathF.PI / 2)), 0, MathF.Cos(-ConsoleSettings.cameraRot.y + (MathF.PI / 2))) / 10f;
                     }
 
                     if (ConsoleRenderer.keyPressed(ConsoleKey.E))
                     {
-                        ConsoleSettings.camera -= new Vector(0, 0.1f, 0);
+                        //ConsoleSettings.camera -= new Vector(0, 0.1f, 0);
                     }
                     if (ConsoleRenderer.keyPressed(ConsoleKey.Q))
                     {
-                        ConsoleSettings.camera += new Vector(0, 0.1f, 0);
+                        //ConsoleSettings.camera += new Vector(0, 0.1f, 0);
                     }
 
 

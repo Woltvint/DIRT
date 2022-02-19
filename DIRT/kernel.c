@@ -205,6 +205,8 @@ struct tri
     struct vec t2;
     struct vec t3;
 
+    struct vec dist;
+
     float visible;
 };
 
@@ -361,9 +363,11 @@ struct mat4x4 matInvert(struct mat4x4 m)
 }
 
 
-__kernel void prepTris(global struct tri* tris, global int* trisCount, global struct vec* rots, global struct vec* poss, global struct vec* camera)
+__kernel void prepTris(global struct tri* tris, global float* trisCount, global struct vec* rots, global struct vec* poss, global struct vec* camera)
 {
         int i = get_global_id(0);
+
+        tris[i].visible = 0;
 
         float3 points[3];
 
@@ -389,11 +393,22 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
         float3 camPos = (float3)(camera[0].x, camera[0].y, camera[0].z);
         float3 camLook = (float3)(camera[1].x, camera[1].y, camera[1].z);
 
-        /*if (angleDist(camLook, n) > 0)
-            tris[i].visible = 0;
-        else
-            tris[i].visible = 1;
+        if (angleDist(camLook, n) > 0.05)
+            return;
 
+        float Dist1 = fast_distance(points[0], camPos);
+        float Dist2 = fast_distance(points[1], camPos);
+        float Dist3 = fast_distance(points[2], camPos);
+        float dist = trisCount[3];
+
+        if (Dist1 > dist && Dist2 > dist && Dist3 > dist)
+            return;
+
+        tris[i].dist.x = Dist1;
+        tris[i].dist.y = Dist2;
+        tris[i].dist.z = Dist3;
+
+        /*
         if (angleDist(points[0] - camPos, camLook) < 0)
             tris[i].visible = 0;
         else
@@ -409,10 +424,6 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
         else
             tris[i].visible = 1;*/
 
-        
-
-
-
         tris[i].p1.x = points[0].x;
         tris[i].p1.y = points[0].y;
         tris[i].p1.z = points[0].z;
@@ -425,10 +436,11 @@ __kernel void prepTris(global struct tri* tris, global int* trisCount, global st
         tris[i].p3.y = points[2].y;
         tris[i].p3.z = points[2].z;
 
-        tris[i].visible = 1;
+
+        tris[i].visible = 1; 
 } 
 
-__kernel void ray(global struct tri* tris, global struct vec* lights, global int* _trisCount, global struct vec* _origin, global struct vec* _dir, global float* texture, global float* _output) {
+__kernel void ray(global struct tri* tris, global struct vec* lights, global float* _trisCount, global struct vec* _origin, global struct vec* _dir, global float* texture, global float* _output) {
 
     int index = get_global_id(0);
 
@@ -448,9 +460,11 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
     float3 light = (float3)(lights[0].x, lights[0].y, lights[0].z);
     
 
-    float dist = 100;
+    float dist = _trisCount[3];
     int distIndex = -1;
     bool cast = false;
+
+    float3 fP;
 
     for (int i = 0; i < trisCount; i++)
     {
@@ -459,6 +473,9 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
             continue;
         }
         
+        if (tris[i].dist.x > dist && tris[i].dist.y > dist && tris[i].dist.z > dist)
+            continue;
+
         float3 A = (float3)(tris[i].p1.x, tris[i].p1.y, tris[i].p1.z);
         float3 B = (float3)(tris[i].p2.x, tris[i].p2.y, tris[i].p2.z);
         float3 C = (float3)(tris[i].p3.x, tris[i].p3.y, tris[i].p3.z);
@@ -480,12 +497,10 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
                 _output[(index * 3) + 2] = 255;
 
                 cast = true;
+                fP = P;
             }
         }
     }
-
-    
-
 
     
     if (cast)
@@ -498,7 +513,7 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
         float2 tB = (float2)(tris[distIndex].t2.x, tris[distIndex].t2.y);
         float2 tC = (float2)(tris[distIndex].t3.x, tris[distIndex].t3.y);
 
-        float3 P = intersectPoint(A, B, C, origin, dir);
+        float3 P = fP;
 
         
 
@@ -571,9 +586,9 @@ __kernel void ray(global struct tri* tris, global struct vec* lights, global int
     }
     else
     {
-        _output[index * 3] = 0;
-        _output[(index * 3)+1] = 0;
-        _output[(index * 3)+2] = 0;
+        _output[index * 3] = _trisCount[4];
+        _output[(index * 3)+1] = _trisCount[5];
+        _output[(index * 3)+2] = _trisCount[6];
     }
    
     

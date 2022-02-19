@@ -103,6 +103,8 @@ namespace DIRT.Types
             o.t2 = uv[1].toVec();
             o.t3 = uv[2].toVec();
 
+            o.dist = Vector.zero.toVec();
+
             o.visible = 1;
             return o;
         }
@@ -118,6 +120,8 @@ namespace DIRT.Types
         public vec t1;
         public vec t2;
         public vec t3;
+
+        public vec dist;
 
         public float visible;
     }

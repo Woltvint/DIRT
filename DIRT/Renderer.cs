@@ -29,7 +29,7 @@ namespace DIRT
         private static ComputeCommandQueue commands;
 
         private static ComputeBuffer<tris> gTris;
-        private static ComputeBuffer<int> gOptions;
+        private static ComputeBuffer<float> gOptions;
         private static ComputeBuffer<vec> gCam;
         private static ComputeBuffer<vec> gPos;
         private static ComputeBuffer<vec> gRot;
@@ -105,7 +105,7 @@ namespace DIRT
 
             while (true)
             {
-
+                Thread.Sleep(16);
                 lock (renderLock)
                 {
                     eye = ConsoleSettings.camera;
@@ -155,13 +155,15 @@ namespace DIRT
         {
             int width = frame.GetLength(0);
             int height = frame.GetLength(1);
+            float renderDist = ConsoleSettings.renderDistance;
+            Vector bg = ConsoleSettings.backgroundColor;
 
             List<tris> tris = new List<tris>();
             List<vec> poss = new List<vec>();
             List<vec> rots = new List<vec>();
 
 
-            int[] options = new int[4];
+            float[] options = new float[7];
 
             vec[] cam = new vec[3];
 
@@ -187,6 +189,10 @@ namespace DIRT
             options[0] = tris.Count;
             options[1] = width;
             options[2] = height;
+            options[3] = renderDist;
+            options[4] = bg.x;
+            options[5] = bg.y;
+            options[6] = bg.z;
 
             if (tris.Count <= 0)
             {
@@ -196,7 +202,7 @@ namespace DIRT
             if (lastTriCount != tris.Count)
             {
                 gTris = new ComputeBuffer<tris>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, tris.ToArray());
-                gOptions = new ComputeBuffer<int>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, options);
+                gOptions = new ComputeBuffer<float>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, options);
                 gCam = new ComputeBuffer<vec>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, cam);
                 gPos = new ComputeBuffer<vec>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, poss.ToArray());
                 gRot = new ComputeBuffer<vec>(context, ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.CopyHostPointer, rots.ToArray());
