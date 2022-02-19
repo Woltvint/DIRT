@@ -393,8 +393,8 @@ __kernel void prepTris(global struct tri* tris, global float* trisCount, global 
         float3 camPos = (float3)(camera[0].x, camera[0].y, camera[0].z);
         float3 camLook = (float3)(camera[1].x, camera[1].y, camera[1].z);
 
-        if (angleDist(camLook, n) > 0.05)
-            return;
+        /*if (angleDist(camLook, n) > 0.05)
+            return;*/
 
         float Dist1 = fast_distance(points[0], camPos);
         float Dist2 = fast_distance(points[1], camPos);
