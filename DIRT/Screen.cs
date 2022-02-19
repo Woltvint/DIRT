@@ -56,45 +56,53 @@ namespace DIRT
                 lastFrame = frame;
             }
 
-            if (ConsoleSettings.screenAutoSize)
+            try
             {
-                int w = 0;
-                int h = 0;
-
-                new ConsoleGameEngine.ConsoleEngine(20, 20, 8, 8);
-
-                for (int i = 20; i <= 1000; i += 10)
+                if (ConsoleSettings.screenAutoSize)
                 {
+                    int w = 0;
+                    int h = 0;
 
-                    try
-                    {
-                        new ConsoleGameEngine.ConsoleEngine(i, 20, 8, 8);
-                    }
-                    catch (System.ArgumentOutOfRangeException)
-                    {
-                        break;
-                    }
-                    w = i - 2;
+                    new ConsoleGameEngine.ConsoleEngine(50, 50, 8, 8);
 
+                    for (int i = 50; i <= 1000; i += 10)
+                    {
+
+                        try
+                        {
+                            new ConsoleGameEngine.ConsoleEngine(i, 50, 8, 8);
+                        }
+                        catch (System.ArgumentOutOfRangeException)
+                        {
+                            break;
+                        }
+                        w = i - 2;
+
+                    }
+
+                    for (int i = 50; i <= 1000; i += 10)
+                    {
+
+                        try
+                        {
+                            new ConsoleGameEngine.ConsoleEngine(50, i, 8, 8);
+                        }
+                        catch (System.ArgumentOutOfRangeException)
+                        {
+                            break;
+                        }
+                        h = i - 2;
+                    }
+
+                    ConsoleSettings.screenHeight = h - 2;
+                    ConsoleSettings.screenWidth = w - 2;
                 }
-
-                for (int i = 20; i <= 1000; i += 10)
-                {
-
-                    try
-                    {
-                        new ConsoleGameEngine.ConsoleEngine(20, i, 8, 8);
-                    }
-                    catch (System.ArgumentOutOfRangeException)
-                    {
-                        break;
-                    }
-                    h = i - 2;
-                }
-
-                ConsoleSettings.screenHeight = h - 2;
-                ConsoleSettings.screenWidth = w - 2;
             }
+            catch (Exception)
+            {
+                Console.WriteLine("auto size failed");
+            }
+
 
             Engine = new ConsoleGameEngine.ConsoleEngine((int)ConsoleSettings.screenWidth + 1, (int)ConsoleSettings.screenHeight + 1, 8, 8);
             
